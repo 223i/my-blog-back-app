@@ -90,7 +90,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO posts(title, text) values(?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO posts(title, text, likesCount, commentsCount) values(?, ?, 0, 0)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, post.getTitle());
             ps.setString(2, post.getText());
             return ps;
@@ -98,6 +98,8 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
         int postId = keyHolder.getKey().intValue();
         tagsIds.forEach(tagId -> jdbcTemplate.update("INSERT INTO post_tag(post_id, tag_id) values (?, ?)", postId, tagId));
         post.setId(postId);
+        post.setLikesCount(0);
+        post.setCommentsCount(0);
         return post;
     }
 }

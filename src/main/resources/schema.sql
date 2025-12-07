@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS posts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(256) NOT NULL,
     text VARCHAR(256) NOT NULL,
-    likesCount INT NOT NULL,
-    commentsCount INT NOT NULL
+    likesCount INT NOT NULL DEFAULT 0,
+    commentsCount INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS post_tag (

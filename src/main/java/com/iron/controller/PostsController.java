@@ -18,21 +18,18 @@ public class PostsController {
 
     //TODO: Добавить обработку пагинации
     @GetMapping
-    @ResponseBody
     public List<Post> getAllPosts(@RequestParam(value = "search", defaultValue = "") String searchText,
                                   @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
         return postService.findAll();
     }
 
-    @PostMapping("/{id}")
-    @ResponseBody
+    @GetMapping("/{id}")
     public Post getPostById(@PathVariable("id") String id) {
         return postService.findPostById(id);
     }
 
-    @PostMapping()
-    @ResponseBody
+    @PostMapping
     public Post createPost(@RequestBody Post post) {
         return postService.save(post);
     }
