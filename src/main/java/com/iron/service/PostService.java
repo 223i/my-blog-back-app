@@ -1,5 +1,8 @@
 package com.iron.service;
 
+import com.iron.dto.PostCreateDto;
+import com.iron.dto.PostUpdateDto;
+import com.iron.mapper.PostDtoMapper;
 import com.iron.model.Post;
 import com.iron.repository.PostDaoRepository;
 import org.springframework.stereotype.Service;
@@ -10,9 +13,11 @@ import java.util.List;
 public class PostService {
 
     private final PostDaoRepository postDaoRepository;
+    private final PostDtoMapper postDtoMapper;
 
-    public PostService(PostDaoRepository postDaoRepository) {
+    public PostService(PostDaoRepository postDaoRepository, PostDtoMapper postDtoMapper) {
         this.postDaoRepository = postDaoRepository;
+        this.postDtoMapper = postDtoMapper;
     }
 
     public List<Post> findAll(){
@@ -23,12 +28,12 @@ public class PostService {
         return postDaoRepository.findPostById(Integer.valueOf(id));
     }
 
-    public Post save (Post post){
-        return postDaoRepository.save(post);
+    public Post save (PostCreateDto post){
+        return postDaoRepository.save(postDtoMapper.postCreateDtoToEntity(post));
     }
 
-    public Post update(Post post){
-        return postDaoRepository.update(post);
+    public Post update(PostUpdateDto post){
+        return postDaoRepository.update(postDtoMapper.postUpdateDtoToEntity(post));
     }
 
     public void delete(String id){

@@ -21,6 +21,8 @@ dependencies {
     implementation("org.springframework:spring-webmvc:6.2.10")
 
     providedCompile("jakarta.servlet:jakarta.servlet-api:5.0.0")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+    implementation("jakarta.el:jakarta.el-api:5.0.0")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.0")

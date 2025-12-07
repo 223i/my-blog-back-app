@@ -1,7 +1,10 @@
 package com.iron.controller;
 
+import com.iron.dto.PostCreateDto;
+import com.iron.dto.PostUpdateDto;
 import com.iron.model.Post;
 import com.iron.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,8 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/posts")
 public class PostsController {
-
-    //TODO: добавить валидацию входных параметров
 
     private final PostService postService;
 
@@ -32,12 +33,12 @@ public class PostsController {
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
+    public Post createPost(@Valid @RequestBody PostCreateDto post) {
         return postService.save(post);
     }
 
     @PutMapping
-    public Post updatePost(@RequestBody Post post) {
+    public Post updatePost(@Valid @RequestBody PostUpdateDto post) {
         return postService.update(post);
     }
 
