@@ -1,10 +1,8 @@
 package com.iron.controller;
 
 import com.iron.model.Post;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.iron.service.PostService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,22 +10,24 @@ import java.util.List;
 @RequestMapping("api/posts")
 public class PostsController {
 
+    private final PostService postService;
+
+    public PostsController(PostService postService) {
+        this.postService = postService;
+    }
+
+    //TODO: Добавить обработку пагинации
     @GetMapping
     @ResponseBody
-    public List<Post> getAllPosts() {
-        Post post1 = new Post();
-        post1.setId(1);
-        post1.setTitle("Post 1");
-        post1.setLikesCount(5);
-        post1.setTags(List.of("tag1", "tag2"));
-        post1.setCommentsCount(1);
+    public List<Post> getAllPosts(@RequestParam("search") String searchText,
+                                  @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                  @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+        return postService.findAll();
+    }
 
-        Post post2 = new Post();
-        post2.setId(1);
-        post2.setTitle("Post 1");
-        post2.setLikesCount(5);
-        post2.setTags(List.of("tag1", "tag2"));
-        post2.setCommentsCount(1);
-        return List.of(post1, post2);
+    @GetMapping("/{id}")
+    @ResponseBody
+    public Post getPostById(@PathVariable("id") String id) {
+        return postService.findPostById(id);
     }
 }
