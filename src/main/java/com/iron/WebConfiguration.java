@@ -1,4 +1,4 @@
-package com.iron.configuration;
+package com.iron;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -6,6 +6,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.iron")
-public class WebConfig {
+@ComponentScan(basePackages = {"com.iron"})
+public class WebConfiguration {
 }

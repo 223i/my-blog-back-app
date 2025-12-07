@@ -10,22 +10,33 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
 dependencies {
-    implementation("org.springframework:spring-webmvc:6.2.14")
-    implementation("org.springframework:spring-web:6.2.14")
-    implementation("org.springframework.data:spring-data-jdbc:4.0.0")
-    implementation("org.projectlombok:lombok:1.18.42")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
+
+    implementation("org.springframework:spring-webmvc:6.2.10")
+
+    providedCompile("jakarta.servlet:jakarta.servlet-api:5.0.0")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.17.0")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.0")
+
+    runtimeOnly("com.h2database:h2:2.2.224")
+
+    implementation("org.springframework.data:spring-data-jdbc:3.4.1")
 
 
-    implementation("tools.jackson.core:jackson-databind:3.0.3")
-    implementation("tools.jackson.core:jackson-core:3.0.3")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.20")
+    compileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    testCompileOnly("org.projectlombok:lombok:1.18.42")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
 
-    runtimeOnly("com.h2database:h2:2.4.240")
-    compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
     testImplementation("org.springframework:spring-test:6.2.14")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -37,5 +48,5 @@ tasks.test {
 }
 
 tasks.war {
-    archiveFileName = "my-blog-back-app.war"
+    archiveFileName.set("my-blog-back-app.war")
 }

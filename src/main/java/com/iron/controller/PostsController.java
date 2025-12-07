@@ -3,6 +3,7 @@ package com.iron.controller;
 import com.iron.model.Post;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 public class PostsController {
 
     @GetMapping
+    @ResponseBody
     public List<Post> getAllPosts() {
         Post post1 = new Post();
         post1.setId(1);
