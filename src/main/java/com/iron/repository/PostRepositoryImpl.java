@@ -42,13 +42,27 @@ public class PostRepositoryImpl implements PostRepository {
                 id);
         if (!rs.next()) {
             throw null; // TODO: добавить throw new NotFoundException(...)
-        }
+        } else {
 
-        return new Post(rs.getInt("id"),
-                rs.getString("title"),
-                rs.getString("text"),
-                new ArrayList<>(),
-                rs.getInt("likesCount"),
-                rs.getInt("commentsCount"));
+            Post post = new Post(rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("text"),
+                    new ArrayList<>(),
+                    rs.getInt("likesCount"),
+                    rs.getInt("commentsCount"));
+
+            jdbcTemplate.query(
+                    "SELECT pt.post_id AS post_id, " +
+                            "       t.id       AS tag_id, " +
+                            "       t.text     AS tag_text " +
+                            "FROM tags t " +
+                            "JOIN post_tag pt ON t.id = pt.tag_id " +
+                            "WHERE pt.post_id = ?",
+                    new Object[]{id},
+                    (resset, rowNum) -> resset.getString("tag_text")
+            ).forEach(post.getTags()::add);
+
+            return post;
+        }
     }
 }

@@ -25,7 +25,7 @@ public class PostsController {
         return postService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @PostMapping("/{id}")
     @ResponseBody
     public Post getPostById(@PathVariable("id") String id) {
         return postService.findPostById(id);
