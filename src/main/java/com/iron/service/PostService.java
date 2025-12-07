@@ -1,7 +1,7 @@
 package com.iron.service;
 
 import com.iron.model.Post;
-import com.iron.repository.PostRepository;
+import com.iron.repository.PostDaoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,17 +9,21 @@ import java.util.List;
 @Service
 public class PostService {
 
-    private final PostRepository postRepository;
+    private final PostDaoRepository postDaoRepository;
 
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
+    public PostService(PostDaoRepository postDaoRepository) {
+        this.postDaoRepository = postDaoRepository;
     }
 
     public List<Post> findAll(){
-        return postRepository.findAll();
+        return postDaoRepository.findAll();
     }
 
     public Post findPostById(String id){
-        return postRepository.findPostById(Integer.valueOf(id));
+        return postDaoRepository.findPostById(Integer.valueOf(id));
+    }
+
+    public Post save (Post post){
+        return postDaoRepository.save(post);
     }
 }

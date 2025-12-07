@@ -2,17 +2,21 @@ package com.iron.repository;
 
 import com.iron.model.Post;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class PostRepositoryImpl implements PostRepository {
+public class PostDaoRepositoryImpl implements PostDaoRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public PostRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public PostDaoRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -64,5 +68,36 @@ public class PostRepositoryImpl implements PostRepository {
 
             return post;
         }
+    }
+
+    @Override
+    public Post save(Post post) {
+
+        List<Integer> tagsIds = new ArrayList<>();
+        post.getTags()
+                .forEach(
+                        tag -> {
+                            String sql = "INSERT INTO tags(text) values (?)";
+                            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+                            jdbcTemplate.update(connection -> {
+                                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                                ps.setString(1, tag);
+                                return ps;
+                            }, keyHolder);
+                            tagsIds.add(keyHolder.getKey().intValue());
+                        });
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO posts(title, text) values(?, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getText());
+            return ps;
+        }, keyHolder);
+        int postId = keyHolder.getKey().intValue();
+        tagsIds.forEach(tagId -> jdbcTemplate.update("INSERT INTO post_tag(post_id, tag_id) values (?, ?)", postId, tagId));
+        post.setId(postId);
+        return post;
     }
 }
