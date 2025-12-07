@@ -102,4 +102,72 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
         post.setCommentsCount(0);
         return post;
     }
+
+    @Override
+    public Post update(Post post) {
+        String sqlPost = "UPDATE posts SET title = ?, text = ?, likesCount = ?, commentsCount = ? WHERE id = ?";
+        jdbcTemplate.update(sqlPost,
+                post.getTitle(),
+                post.getText(),
+                post.getLikesCount() != null ? post.getLikesCount() : 0,
+                post.getCommentsCount() != null ? post.getCommentsCount() : 0,
+                post.getId());
+
+        List<Integer> existingTagIds = jdbcTemplate.queryForList(
+                "SELECT tag_id FROM post_tag WHERE post_id = ?",
+                Integer.class,
+                post.getId()
+        );
+
+        if (!existingTagIds.isEmpty()) {
+            jdbcTemplate.update("DELETE FROM post_tag WHERE post_id = ?", post.getId());
+        }
+
+        if (post.getTags() != null && !post.getTags().isEmpty()) {
+            List<Integer> newTagIds = new ArrayList<>();
+            for (String tag : post.getTags()) {
+                // Проверяем, есть ли тег в таблице tags
+                Integer tagId = jdbcTemplate.query(
+                        "SELECT id FROM tags WHERE text = ?",
+                        ps -> ps.setString(1, tag),
+                        rs -> rs.next() ? rs.getInt("id") : null
+                );
+
+                // Если тега нет, вставляем новый
+                if (tagId == null) {
+                    KeyHolder keyHolder = new GeneratedKeyHolder();
+                    jdbcTemplate.update(connection -> {
+                        PreparedStatement ps = connection.prepareStatement(
+                                "INSERT INTO tags(text) VALUES (?)",
+                                Statement.RETURN_GENERATED_KEYS
+                        );
+                        ps.setString(1, tag);
+                        return ps;
+                    }, keyHolder);
+                    tagId = keyHolder.getKey().intValue();
+                }
+
+                newTagIds.add(tagId);
+            }
+
+            for (Integer tagId : newTagIds) {
+                jdbcTemplate.update(
+                        "MERGE INTO post_tag(post_id, tag_id) KEY(post_id, tag_id) VALUES (?, ?)",
+                        post.getId(),
+                        tagId
+                );
+            }
+        }
+
+        post.setLikesCount(post.getLikesCount() != null ? post.getLikesCount() : 0);
+        post.setCommentsCount(post.getCommentsCount() != null ? post.getCommentsCount() : 0);
+
+        return post;
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        jdbcTemplate.update("delete from post_tag where post_id = ?", id);
+        jdbcTemplate.update("delete from posts where id = ?", id);
+    }
 }

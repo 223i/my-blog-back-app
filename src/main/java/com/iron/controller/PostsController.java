@@ -10,6 +10,8 @@ import java.util.List;
 @RequestMapping("api/posts")
 public class PostsController {
 
+    //TODO: добавить валидацию входных параметров
+
     private final PostService postService;
 
     public PostsController(PostService postService) {
@@ -32,5 +34,15 @@ public class PostsController {
     @PostMapping
     public Post createPost(@RequestBody Post post) {
         return postService.save(post);
+    }
+
+    @PutMapping
+    public Post updatePost(@RequestBody Post post) {
+        return postService.update(post);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable("id") String id) {
+        postService.delete(id);
     }
 }

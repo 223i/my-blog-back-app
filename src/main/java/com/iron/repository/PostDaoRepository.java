@@ -9,4 +9,6 @@ public interface PostDaoRepository {
      List<Post> findAll();
      Post findPostById(Integer id);
      Post save(Post post);
+     Post update(Post post);
+     void deleteById(Integer id);
 }

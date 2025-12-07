@@ -26,4 +26,12 @@ public class PostService {
     public Post save (Post post){
         return postDaoRepository.save(post);
     }
+
+    public Post update(Post post){
+        return postDaoRepository.update(post);
+    }
+
+    public void delete(String id){
+         postDaoRepository.deleteById(Integer.valueOf(id));
+    }
 }
