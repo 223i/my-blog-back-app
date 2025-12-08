@@ -1,4 +1,4 @@
-package com.iron.dto;
+package com.iron.dto.comment;
 
 import com.iron.util.validator.RequiredField;
 import lombok.AllArgsConstructor;
@@ -6,23 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostUpdateDto {
+public class CommentUpdateDto {
 
     @RequiredField(message = "Id is required")
     private Integer id;
 
-    @RequiredField(message = "Title is required")
-    private String title;
-
     @RequiredField(message = "Text is required")
     private String text;
 
-    @RequiredField(message = "Tags are required")
-    private List<String> tags;
+    @RequiredField(message = "PostId is required")
+    private Integer postId;
 }

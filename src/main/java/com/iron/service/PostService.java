@@ -1,7 +1,7 @@
 package com.iron.service;
 
-import com.iron.dto.PostCreateDto;
-import com.iron.dto.PostUpdateDto;
+import com.iron.dto.post.PostCreateDto;
+import com.iron.dto.post.PostUpdateDto;
 import com.iron.mapper.PostDtoMapper;
 import com.iron.model.Post;
 import com.iron.repository.PostDaoRepository;

@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class PostDaoRepositoryImpl implements PostDaoRepository {
@@ -45,7 +46,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
                 "SELECT id, title, text, likesCount, commentsCount FROM posts WHERE id = ?",
                 id);
         if (!rs.next()) {
-            throw null; // TODO: добавить throw new NotFoundException(...)
+            throw new NoSuchElementException(String.format("Post with id=%s not found", id));
         } else {
 
             Post post = new Post(rs.getInt("id"),

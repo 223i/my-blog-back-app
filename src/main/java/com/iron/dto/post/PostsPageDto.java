@@ -1,4 +1,4 @@
-package com.iron.dto;
+package com.iron.dto.post;
 
 import com.iron.model.Post;
 import lombok.AllArgsConstructor;

@@ -19,7 +19,12 @@ CREATE TABLE IF NOT EXISTS post_tag (
     FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
 
-
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    text VARCHAR(256) NOT NULL,
+    post_id BIGINT NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
 
 INSERT INTO tags (text) VALUES
 ('java'),
@@ -49,4 +54,9 @@ INSERT INTO post_tag (post_id, tag_id) VALUES
 (3, 1),
 (3, 4);
 
+
+INSERT INTO comments (text, post_id) VALUES
+('Комментарий 1 для поста 1', 1),
+('Комментарий 2 для поста 1', 1),
+('Комментарий для поста 2', 2);
 

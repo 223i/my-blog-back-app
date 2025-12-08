@@ -1,7 +1,7 @@
 package com.iron.mapper;
 
-import com.iron.dto.PostCreateDto;
-import com.iron.dto.PostUpdateDto;
+import com.iron.dto.post.PostCreateDto;
+import com.iron.dto.post.PostUpdateDto;
 import com.iron.model.Post;
 import org.springframework.stereotype.Component;
 
