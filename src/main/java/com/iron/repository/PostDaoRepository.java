@@ -1,6 +1,7 @@
 package com.iron.repository;
 
 import com.iron.model.Post;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface PostDaoRepository {
      Post save(Post post);
      Post update(Post post);
      void deleteById(Integer id);
+     void saveImage(Integer postId, MultipartFile file);
+     byte[] getImage(Integer postId);
 }

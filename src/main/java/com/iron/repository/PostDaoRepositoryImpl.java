@@ -5,7 +5,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -170,5 +172,24 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     public void deleteById(Integer id) {
         jdbcTemplate.update("delete from post_tag where post_id = ?", id);
         jdbcTemplate.update("delete from posts where id = ?", id);
+    }
+
+    @Override
+    public void saveImage(Integer postId, MultipartFile file) {
+        try {
+            jdbcTemplate.update(
+                    "UPDATE images SET image = ? WHERE post_id = ?",
+                    file.getBytes(),
+                    postId
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public byte[] getImage(Integer postId) {
+        String sql = "SELECT image FROM images WHERE post_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{postId}, byte[].class);
     }
 }

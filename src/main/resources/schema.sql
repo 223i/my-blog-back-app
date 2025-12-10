@@ -26,6 +26,13 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );
 
+CREATE TABLE IF NOT EXISTS images (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    post_id BIGINT NOT NULL,
+    image BLOB,
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
+
 INSERT INTO tags (text) VALUES
 ('java'),
 ('spring'),
