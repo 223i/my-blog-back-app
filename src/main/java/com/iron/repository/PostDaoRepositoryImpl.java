@@ -1,6 +1,8 @@
 package com.iron.repository;
 
 import com.iron.model.Post;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -177,11 +179,19 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     @Override
     public void saveImage(Integer postId, MultipartFile file) {
         try {
-            jdbcTemplate.update(
+            int updated = jdbcTemplate.update(
                     "UPDATE images SET image = ? WHERE post_id = ?",
                     file.getBytes(),
                     postId
             );
+
+            if (updated == 0) {
+                jdbcTemplate.update(
+                        "INSERT INTO images (post_id, image) VALUES (?, ?)",
+                        postId,
+                        file.getBytes()
+                );
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -190,6 +200,10 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     @Override
     public byte[] getImage(Integer postId) {
         String sql = "SELECT image FROM images WHERE post_id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{postId}, byte[].class);
+        try {
+            return jdbcTemplate.queryForObject(sql, byte[].class, postId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new DataRetrievalFailureException("Image for post " + postId + " not found");
+        }
     }
 }
