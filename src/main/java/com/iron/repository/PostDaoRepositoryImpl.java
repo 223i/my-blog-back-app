@@ -154,7 +154,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     }
 
     @Override
-    public Post update(Post post) {
+    public void update(Post post) {
         String sqlPost = "UPDATE posts SET title = ?, text = ?, likesCount = ?, commentsCount = ? WHERE id = ?";
         jdbcTemplate.update(sqlPost,
                 post.getTitle(),
@@ -211,8 +211,6 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
 
         post.setLikesCount(post.getLikesCount() != null ? post.getLikesCount() : 0);
         post.setCommentsCount(post.getCommentsCount() != null ? post.getCommentsCount() : 0);
-
-        return post;
     }
 
     @Override

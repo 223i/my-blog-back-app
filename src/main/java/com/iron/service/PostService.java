@@ -42,8 +42,13 @@ public class PostService {
         return postDaoRepository.save(postDtoMapper.postCreateDtoToEntity(post));
     }
 
-    public Post update(PostUpdateDto post){
-        return postDaoRepository.update(postDtoMapper.postUpdateDtoToEntity(post));
+    public Post update(String id, PostUpdateDto post){
+        Post existingPost = postDaoRepository.findPostById(Integer.valueOf(id));
+        Post updatedPost = postDtoMapper.postUpdateDtoToEntity(post);
+        updatedPost.setLikesCount(existingPost.getLikesCount());
+        updatedPost.setCommentsCount(existingPost.getCommentsCount());
+        postDaoRepository.update(updatedPost);
+        return postDaoRepository.findPostById(Integer.valueOf(id));
     }
 
     public void delete(String id){

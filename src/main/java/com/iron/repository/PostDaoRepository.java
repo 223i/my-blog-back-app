@@ -15,7 +15,7 @@ public interface PostDaoRepository {
 
     Post save(Post post);
 
-    Post update(Post post);
+    void update(Post post);
 
     void deleteById(Integer id);
 

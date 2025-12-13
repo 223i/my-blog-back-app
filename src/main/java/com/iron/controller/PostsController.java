@@ -20,7 +20,6 @@ public class PostsController {
 
 
     @GetMapping
-//    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET})
     public PostsPageDto getAllPosts(@RequestParam(value = "search", defaultValue = "") String searchText,
                                           @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
                                           @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
@@ -37,9 +36,9 @@ public class PostsController {
         return postService.save(post);
     }
 
-    @PutMapping
-    public Post updatePost(@Valid @RequestBody PostUpdateDto post) {
-        return postService.update(post);
+    @PutMapping("/{id}")
+    public Post updatePost(@PathVariable("id") String id, @Valid @RequestBody PostUpdateDto post) {
+        return postService.update(id, post);
     }
 
     @DeleteMapping("/{id}")
