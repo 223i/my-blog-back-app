@@ -12,9 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class PostDaoRepositoryImpl implements PostDaoRepository {
@@ -26,22 +25,68 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        List<Post> allPosts = jdbcTemplate.query("SELECT id, title, text, likesCount, commentsCount from posts",
-                (rs, rowNum) -> new Post(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getString("text"),
-                        new ArrayList<>(),
-                        rs.getInt("likesCount"),
-                        rs.getInt("commentsCount")
-                ));
+    public List<Post> findPostsForPage(String postTitle, int pageNumber, int pageSize) {
+        StringBuilder sql = new StringBuilder("SELECT id, title, text, likesCount, commentsCount FROM posts");
 
-        allPosts.forEach(post -> jdbcTemplate.query("SELECT pt.post_id, t.id, t.text\n" +
-                        "FROM tags t\n" +
-                        "JOIN post_tag pt ON t.id = pt.tag_id",
-                (rs, rowNum) -> post.getTags().add(rs.getString("text"))));
-        return allPosts;
+
+        List<Object> params = new ArrayList<>();
+        if (postTitle != null && !postTitle.isBlank()) {
+            sql.append(" WHERE title LIKE ?");
+            params.add("%" + postTitle + "%");
+        }
+        sql.append(" ORDER BY id DESC LIMIT ? OFFSET ?");
+        int offset = (pageNumber - 1) * pageSize;
+        params.add(pageSize);
+        params.add(offset);
+
+        // Получаем список постов
+        List<Post> posts = jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> {
+            Post post = new Post(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("text"),
+                    new ArrayList<>(),
+                    rs.getInt("likesCount"),
+                    rs.getInt("commentsCount")
+            );
+            return post;
+        });
+
+        if (!posts.isEmpty()) {
+            // Получаем теги для всех постов за один запрос
+            List<Integer> postIds = posts.stream().map(Post::getId).toList();
+            String tagsSql = "SELECT pt.post_id, t.text " +
+                    "FROM tags t " +
+                    "JOIN post_tag pt ON t.id = pt.tag_id " +
+                    "WHERE pt.post_id IN (" +
+                    postIds.stream().map(id -> "?").collect(Collectors.joining(",")) +
+                    ")";
+            Object[] tagParams = postIds.toArray();
+
+            Map<Integer, List<String>> tagsMap = new HashMap<>();
+            jdbcTemplate.query(tagsSql, (rs) -> {
+                int postId = rs.getInt("post_id");
+                String tag = rs.getString("text");
+                tagsMap.computeIfAbsent(postId, k -> new ArrayList<>()).add(tag);
+            }, tagParams);
+
+            // Присваиваем теги постам
+            posts.forEach(post -> post.setTags(tagsMap.getOrDefault(post.getId(), new ArrayList<>())));
+        }
+
+        return posts;
+    }
+
+    @Override
+    public Long countPosts(String postTitle) {
+
+        if (postTitle != null && !postTitle.isEmpty()) {
+            String sql = "SELECT COUNT(*) FROM posts WHERE title LIKE ?";
+            return jdbcTemplate.queryForObject(sql, Long.class, "%" + postTitle + "%");
+        } else {
+            String sql = "SELECT COUNT(*) FROM posts";
+            return jdbcTemplate.queryForObject(sql, Long.class); // без параметров
+        }
     }
 
     @Override

@@ -25,8 +25,23 @@
             <max-request-size>20971520</max-request-size> <!-- 20MB -->
         </multipart-config>
     </servlet>
+    <filter>
+        <filter-name>corsFilter</filter-name>
+        <filter-class>com.iron.configuration.CorsFilter</filter-class>
+        <!-- Опционально: можно передать параметры в init() метод фильтра -->
+        <!--
+        <init-param>
+            <param-name>allowedOrigins</param-name>
+            <param-value>http://localhost</param-value>
+        </init-param>
+        -->
+    </filter>
 
-    <!-- DispatcherServlet обрабатывает все запросы -->
+    <filter-mapping>
+        <filter-name>corsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>

@@ -2,6 +2,7 @@ package com.iron.service;
 
 import com.iron.dto.post.PostCreateDto;
 import com.iron.dto.post.PostUpdateDto;
+import com.iron.dto.post.PostsPageDto;
 import com.iron.mapper.PostDtoMapper;
 import com.iron.model.Post;
 import com.iron.repository.PostDaoRepository;
@@ -20,8 +21,17 @@ public class PostService {
         this.postDtoMapper = postDtoMapper;
     }
 
-    public List<Post> findAll(){
-        return postDaoRepository.findAll();
+    public PostsPageDto findAll(String searchText, Integer pageNumber, Integer pageSize){
+        long totalElements = postDaoRepository.countPosts(searchText);
+
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+        List<Post> postsForPage = postDaoRepository.findPostsForPage(searchText, pageNumber, pageSize);
+        PostsPageDto response = new PostsPageDto();
+        response.setPosts(postsForPage);
+        response.setHasPrev(pageNumber > 0);
+        response.setHasNext(pageNumber < totalPages - 1);
+        response.setLastPage(totalPages);
+        return response;
     }
 
     public Post findPostById(String id){

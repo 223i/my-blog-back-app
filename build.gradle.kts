@@ -50,5 +50,5 @@ tasks.test {
 }
 
 tasks.war {
-    archiveFileName.set("my-blog-back-app.war")
+    archiveFileName.set("ROOT.war")
 }

@@ -7,11 +7,19 @@ import java.util.List;
 
 public interface PostDaoRepository {
 
-     List<Post> findAll();
-     Post findPostById(Integer id);
-     Post save(Post post);
-     Post update(Post post);
-     void deleteById(Integer id);
-     void saveImage(Integer postId, MultipartFile file);
-     byte[] getImage(Integer postId);
+    List<Post> findPostsForPage(String postTitle, int pageNumber, int pageSize);
+
+    Long countPosts(String postTitle);
+
+    Post findPostById(Integer id);
+
+    Post save(Post post);
+
+    Post update(Post post);
+
+    void deleteById(Integer id);
+
+    void saveImage(Integer postId, MultipartFile file);
+
+    byte[] getImage(Integer postId);
 }

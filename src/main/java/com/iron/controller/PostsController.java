@@ -2,12 +2,11 @@ package com.iron.controller;
 
 import com.iron.dto.post.PostCreateDto;
 import com.iron.dto.post.PostUpdateDto;
+import com.iron.dto.post.PostsPageDto;
 import com.iron.model.Post;
 import com.iron.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/posts")
@@ -19,12 +18,13 @@ public class PostsController {
         this.postService = postService;
     }
 
-    //TODO: Добавить обработку пагинации
+
     @GetMapping
-    public List<Post> getAllPosts(@RequestParam(value = "search", defaultValue = "") String searchText,
-                                  @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
-                                  @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-        return postService.findAll();
+//    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET})
+    public PostsPageDto getAllPosts(@RequestParam(value = "search", defaultValue = "") String searchText,
+                                          @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+                                          @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+        return postService.findAll(searchText, pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
