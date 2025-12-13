@@ -34,8 +34,9 @@ public class CommentService {
     }
 
     public Comment update(String post_id, CommentUpdateDto comment){
-        return commentDaoRepository.update(Integer.valueOf(post_id),
+         commentDaoRepository.update(Integer.valueOf(post_id),
                 commentDtoMapper.commentUpdateDtoToEntity(comment));
+         return commentDaoRepository.findCommentById(Integer.valueOf(post_id), comment.getId());
     }
 
     public void delete(String post_id, String id){

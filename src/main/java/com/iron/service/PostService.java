@@ -9,6 +9,7 @@ import com.iron.repository.PostDaoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -45,8 +46,13 @@ public class PostService {
     public Post update(String id, PostUpdateDto post){
         Post existingPost = postDaoRepository.findPostById(Integer.valueOf(id));
         Post updatedPost = postDtoMapper.postUpdateDtoToEntity(post);
-        updatedPost.setLikesCount(existingPost.getLikesCount());
-        updatedPost.setCommentsCount(existingPost.getCommentsCount());
+        if (Optional.ofNullable(existingPost).isEmpty()){
+            updatedPost.setLikesCount(0);
+            updatedPost.setCommentsCount(0);
+        } else {
+            updatedPost.setLikesCount(Optional.ofNullable(existingPost.getLikesCount()).orElse(0));
+            updatedPost.setCommentsCount(Optional.ofNullable(existingPost.getCommentsCount()).orElse(0));
+        }
         postDaoRepository.update(updatedPost);
         return postDaoRepository.findPostById(Integer.valueOf(id));
     }

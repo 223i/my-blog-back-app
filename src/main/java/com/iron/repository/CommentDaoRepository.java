@@ -12,7 +12,7 @@ public interface CommentDaoRepository {
 
     Comment save(Integer post_id, Comment comment);
 
-    Comment update(Integer post_id, Comment comment);
+    void update(Integer post_id, Comment comment);
 
     void deleteById(Integer post_id, Integer id);
 }

@@ -61,7 +61,7 @@ public class CommentDaoRepositoryImpl implements CommentDaoRepository {
     }
 
     @Override
-    public Comment update(Integer post_id, Comment comment) {
+    public void update(Integer post_id, Comment comment) {
         String sqlPost = "UPDATE comments SET text = ? WHERE id = ? AND post_id = ?";
         int rows = jdbcTemplate.update(sqlPost,
                 comment.getText(),
@@ -72,7 +72,6 @@ public class CommentDaoRepositoryImpl implements CommentDaoRepository {
                     "Comment with id=%s for post_id=%s not found".formatted(comment.getId(), post_id)
             );
         }
-        return comment;
     }
 
     @Override

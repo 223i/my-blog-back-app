@@ -39,6 +39,10 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
 
 
+    implementation("org.springframework:spring-context:6.2.7")
+    testImplementation("org.mockito:mockito-core:5.14.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
+
     testImplementation("org.springframework:spring-test:6.2.14")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
