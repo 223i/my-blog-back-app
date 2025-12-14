@@ -21,8 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,7 +60,7 @@ class CommentsControllerIntegrationTest {
 
     @Test
     void shouldReturnSingleComment() throws Exception {
-        Comment existingComment = commentDaoRepository.findAll(1).get(0);
+        Comment existingComment = commentDaoRepository.findAll(1).getFirst();
 
         mockMvc.perform(get("/api/posts/1/comments/{id}", existingComment.getId()))
                 .andExpect(status().isOk())
@@ -86,7 +85,7 @@ class CommentsControllerIntegrationTest {
 
     @Test
     void shouldUpdateCommentForPost1() throws Exception {
-        Comment existingComment = commentDaoRepository.findAll(1).get(0);
+        Comment existingComment = commentDaoRepository.findAll(1).getFirst();
 
         CommentUpdateDto dto = new CommentUpdateDto();
         dto.setId(existingComment.getId());
@@ -100,12 +99,12 @@ class CommentsControllerIntegrationTest {
                 .andExpect(jsonPath("$.text").value("Обновленный комментарий"));
 
         Comment updated = commentDaoRepository.findCommentById(1, existingComment.getId());
-        assertTrue(updated.getText().equals("Обновленный комментарий"));
+        assertEquals("Обновленный комментарий", updated.getText());
     }
 
     @Test
     void shouldDeleteComment() throws Exception {
-        Comment existingComment = commentDaoRepository.findAll(1).get(0);
+        Comment existingComment = commentDaoRepository.findAll(1).getFirst();
 
         mockMvc.perform(delete("/api/posts/1/comments/{id}", existingComment.getId()))
                 .andExpect(status().isOk());
