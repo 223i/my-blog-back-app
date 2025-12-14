@@ -34,7 +34,7 @@ public class CommentsController {
         return commentService.save(post_id, comment);
     }
 
-    @PutMapping("/id")
+    @PutMapping("/{id}")
     public Comment updateComment(@PathVariable("post_id") String post_id, @PathVariable("id") String commentId,
                                  @Valid @RequestBody CommentUpdateDto comment) {
         return commentService.update(post_id, commentId, comment);
