@@ -4,10 +4,12 @@ import com.iron.dto.comment.CommentCreateDto;
 import com.iron.dto.comment.CommentUpdateDto;
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.model.Comment;
+import com.iron.model.Post;
 import com.iron.repository.CommentDaoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -33,10 +35,10 @@ public class CommentService {
                 commentDtoMapper.commentCreateDtoToEntity(comment));
     }
 
-    public Comment update(String post_id, CommentUpdateDto comment){
+    public Comment update(String post_id, String commentId, CommentUpdateDto comment){
          commentDaoRepository.update(Integer.valueOf(post_id),
                 commentDtoMapper.commentUpdateDtoToEntity(comment));
-         return commentDaoRepository.findCommentById(Integer.valueOf(post_id), comment.getId());
+         return commentDaoRepository.findCommentById(Integer.valueOf(post_id), Integer.valueOf(commentId));
     }
 
     public void delete(String post_id, String id){

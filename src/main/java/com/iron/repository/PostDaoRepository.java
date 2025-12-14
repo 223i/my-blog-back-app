@@ -18,8 +18,4 @@ public interface PostDaoRepository {
     void update(Post post);
 
     void deleteById(Integer id);
-
-    void saveImage(Integer postId, MultipartFile file);
-
-    byte[] getImage(Integer postId);
 }

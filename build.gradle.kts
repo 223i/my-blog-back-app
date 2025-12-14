@@ -19,7 +19,7 @@ java {
 dependencies {
 
     implementation("org.springframework:spring-webmvc:6.2.10")
-
+    implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
     providedCompile("jakarta.servlet:jakarta.servlet-api:5.0.0")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("jakarta.el:jakarta.el-api:5.0.0")

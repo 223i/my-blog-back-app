@@ -3,6 +3,7 @@ package com.iron.unit.test.configuration;
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.mapper.PostDtoMapper;
 import com.iron.repository.CommentDaoRepository;
+import com.iron.repository.ImagesDaoRepository;
 import com.iron.repository.PostDaoRepository;
 import com.iron.service.CommentService;
 import com.iron.service.ImageService;
@@ -46,8 +47,13 @@ public class TestConfig {
     }
 
     @Bean
-    public ImageService imageService(PostDaoRepository postDaoRepository){
-        return new ImageService(postDaoRepository);
+    public ImagesDaoRepository imagesDaoRepository(){
+        return Mockito.mock(ImagesDaoRepository.class);
+    }
+
+    @Bean
+    public ImageService imageService(ImagesDaoRepository imagesDaoRepository, PostDaoRepository postDaoRepository){
+        return new ImageService(imagesDaoRepository, postDaoRepository);
     }
 
     @Bean

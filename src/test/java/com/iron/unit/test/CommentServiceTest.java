@@ -92,12 +92,13 @@ public class CommentServiceTest {
     @Test
     void shouldUpdateComment() {
         String postId = "1";
+        String commentId = "2";
         CommentUpdateDto dto = new CommentUpdateDto(2, "updated text", 1);
         Comment updated = new Comment(2, 1, "updated text");
 
         when(commentDaoRepository.findCommentById(1, updated.getId())).thenReturn(updated);
 
-        Comment result = commentService.update(postId, dto);
+        Comment result = commentService.update(postId, commentId,  dto);
 
         assertEquals(updated, result);
 

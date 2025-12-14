@@ -1,6 +1,7 @@
 package com.iron.unit.test;
 
 import com.iron.model.Post;
+import com.iron.repository.ImagesDaoRepository;
 import com.iron.repository.PostDaoRepository;
 import com.iron.service.ImageService;
 import com.iron.unit.test.configuration.TestConfig;
@@ -23,7 +24,10 @@ import static org.mockito.Mockito.*;
 public class ImageServiceTest {
 
     @Autowired
-    private PostDaoRepository postRepository;
+    private ImagesDaoRepository imagesDaoRepository;
+
+    @Autowired
+    private PostDaoRepository postDaoRepository;
 
     @Autowired
     private ImageService imageService;
@@ -31,7 +35,8 @@ public class ImageServiceTest {
 
     @BeforeEach
     void resetMocks() {
-        reset(postRepository);
+        reset(imagesDaoRepository);
+        reset(postDaoRepository);
     }
 
 
@@ -40,24 +45,24 @@ public class ImageServiceTest {
         String postId = "1";
         byte[] imageBytes = new byte[]{1, 2, 3};
 
-        when(postRepository.getImage(1)).thenReturn(imageBytes);
+        when(imagesDaoRepository.getImage(1)).thenReturn(imageBytes);
 
         byte[] result = imageService.getImage(postId);
 
         assertArrayEquals(imageBytes, result);
-        verify(postRepository, times(1)).getImage(1);
+        verify(imagesDaoRepository, times(1)).getImage(1);
     }
 
     @Test
     void shouldUploadImageSuccessfully() throws Exception {
         String postId = "1";
         MultipartFile file = mock(MultipartFile.class);
-        when(postRepository.findPostById(1)).thenReturn(new Post());
+        when(postDaoRepository.findPostById(1)).thenReturn(new Post());
 
         imageService.uploadImage(postId, file);
 
-        verify(postRepository, times(1)).findPostById(1);
-        verify(postRepository, times(1)).saveImage(1, file);
+        verify(postDaoRepository, times(1)).findPostById(1);
+        verify(imagesDaoRepository, times(1)).saveImage(1, file);
     }
 
     @Test
@@ -65,11 +70,11 @@ public class ImageServiceTest {
         String postId = "1";
         MultipartFile file = mock(MultipartFile.class);
 
-        when(postRepository.findPostById(1)).thenThrow(new NoSuchElementException());
+        when(postDaoRepository.findPostById(1)).thenThrow(new NoSuchElementException());
 
         assertThrows(NoSuchElementException.class, () -> imageService.uploadImage(postId, file));
 
-        verify(postRepository, times(1)).findPostById(1);
-        verify(postRepository, never()).saveImage(anyInt(), any());
+        verify(postDaoRepository, times(1)).findPostById(1);
+        verify(imagesDaoRepository, never()).saveImage(anyInt(), (MultipartFile) any());
     }
 }
