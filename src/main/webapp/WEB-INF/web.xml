@@ -28,13 +28,6 @@
     <filter>
         <filter-name>corsFilter</filter-name>
         <filter-class>com.iron.configuration.CorsFilter</filter-class>
-        <!-- Опционально: можно передать параметры в init() метод фильтра -->
-        <!--
-        <init-param>
-            <param-name>allowedOrigins</param-name>
-            <param-value>http://localhost</param-value>
-        </init-param>
-        -->
     </filter>
 
     <filter-mapping>

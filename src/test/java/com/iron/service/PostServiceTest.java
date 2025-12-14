@@ -1,12 +1,11 @@
-package com.iron.unit.test;
+package com.iron.service;
 
 import com.iron.dto.post.PostCreateDto;
 import com.iron.dto.post.PostUpdateDto;
 import com.iron.dto.post.PostsPageDto;
 import com.iron.model.Post;
 import com.iron.repository.PostDaoRepository;
-import com.iron.service.PostService;
-import com.iron.unit.test.configuration.TestConfig;
+import com.iron.config.UnitTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@ContextConfiguration(classes = UnitTestConfig.class)
 public class PostServiceTest {
 
     @Autowired

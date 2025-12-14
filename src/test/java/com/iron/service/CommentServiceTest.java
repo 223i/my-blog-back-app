@@ -1,12 +1,11 @@
-package com.iron.unit.test;
+package com.iron.service;
 
 import com.iron.dto.comment.CommentCreateDto;
 import com.iron.dto.comment.CommentUpdateDto;
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.model.Comment;
 import com.iron.repository.CommentDaoRepository;
-import com.iron.service.CommentService;
-import com.iron.unit.test.configuration.TestConfig;
+import com.iron.config.UnitTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@ContextConfiguration(classes = UnitTestConfig.class)
 public class CommentServiceTest {
 
     @Autowired

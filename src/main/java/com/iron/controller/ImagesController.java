@@ -1,6 +1,7 @@
 package com.iron.controller;
 
 import com.iron.service.ImageService;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,19 @@ public class ImagesController {
 
     @GetMapping
     public ResponseEntity<byte[]> getPostImage(@PathVariable("post_id") String postId) {
-        byte[] image = imageService.getImage(postId);
-
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(image);
+        try {
+            byte[] image = imageService.getImage(postId);
+            if (image == null || image.length == 0) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity
+                        .ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(image);
+            }
+        } catch (DataRetrievalFailureException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

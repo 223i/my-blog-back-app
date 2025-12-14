@@ -20,7 +20,7 @@ dependencies {
 
     implementation("org.springframework:spring-webmvc:6.2.10")
     implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
-    providedCompile("jakarta.servlet:jakarta.servlet-api:5.0.0")
+    providedCompile("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("jakarta.el:jakarta.el-api:5.0.0")
 
@@ -45,8 +45,10 @@ dependencies {
 
     testImplementation("org.springframework:spring-test:6.2.14")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.jayway.jsonpath:json-path:2.9.0")
 }
 
 tasks.test {

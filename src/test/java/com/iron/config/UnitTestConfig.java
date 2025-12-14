@@ -1,4 +1,4 @@
-package com.iron.unit.test.configuration;
+package com.iron.config;
 
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.mapper.PostDtoMapper;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class TestConfig {
+public class UnitTestConfig {
 
     @Bean
     public PostDaoRepository mockPostDaoRepository() {
