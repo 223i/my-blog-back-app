@@ -20,7 +20,8 @@ import javax.sql.DataSource;
         "com.iron.controller",
         "com.iron.service",
         "com.iron.repository",
-        "com.iron.mapper"
+        "com.iron.mapper",
+        "com.iron.util"
 },
         excludeFilters = {
                 @ComponentScan.Filter(

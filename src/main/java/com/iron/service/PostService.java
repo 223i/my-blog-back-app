@@ -29,8 +29,8 @@ public class PostService {
         List<Post> postsForPage = postDaoRepository.findPostsForPage(searchText, pageNumber, pageSize);
         PostsPageDto response = new PostsPageDto();
         response.setPosts(postsForPage);
-        response.setHasPrev(pageNumber > 0);
-        response.setHasNext(pageNumber < totalPages - 1);
+        response.setHasPrev(pageNumber > 1);
+        response.setHasNext(pageNumber <= totalPages);
         response.setLastPage(totalPages);
         return response;
     }
@@ -44,17 +44,23 @@ public class PostService {
     }
 
     public Post update(String id, PostUpdateDto post){
-        Post existingPost = postDaoRepository.findPostById(Integer.valueOf(id));
+        Integer postId = Integer.valueOf(id);
+        Post existingPost = postDaoRepository.findPostById(postId);
         Post updatedPost = postDtoMapper.postUpdateDtoToEntity(post);
-        if (Optional.ofNullable(existingPost).isEmpty()){
-            updatedPost.setLikesCount(0);
-            updatedPost.setCommentsCount(0);
-        } else {
+        updatedPost.setId(postId);
+
+        if (existingPost != null) {
+            // Сохраняем текущие значения счетчиков
             updatedPost.setLikesCount(Optional.ofNullable(existingPost.getLikesCount()).orElse(0));
             updatedPost.setCommentsCount(Optional.ofNullable(existingPost.getCommentsCount()).orElse(0));
+        } else {
+            // Если поста нет, создаём новый с нуля
+            updatedPost.setLikesCount(0);
+            updatedPost.setCommentsCount(0);
         }
+
         postDaoRepository.update(updatedPost);
-        return postDaoRepository.findPostById(Integer.valueOf(id));
+        return postDaoRepository.findPostById(postId);
     }
 
     public void delete(String id){

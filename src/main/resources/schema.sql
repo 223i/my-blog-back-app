@@ -23,12 +23,18 @@ CREATE TABLE IF NOT EXISTS comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     text VARCHAR(256) NOT NULL,
     post_id BIGINT NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES posts(id)
+    CONSTRAINT fk_comments_posts
+            FOREIGN KEY (post_id)
+            REFERENCES posts(id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     post_id BIGINT NOT NULL,
     image BLOB,
-    FOREIGN KEY (post_id) REFERENCES posts(id)
+    CONSTRAINT fk_images_posts
+            FOREIGN KEY (post_id)
+            REFERENCES posts(id)
+            ON DELETE CASCADE
 );
