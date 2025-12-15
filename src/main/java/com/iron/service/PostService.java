@@ -30,7 +30,7 @@ public class PostService {
         PostsPageDto response = new PostsPageDto();
         response.setPosts(postsForPage);
         response.setHasPrev(pageNumber > 1);
-        response.setHasNext(pageNumber <= totalPages);
+        response.setHasNext(pageNumber < totalPages);
         response.setLastPage(totalPages);
         return response;
     }

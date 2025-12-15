@@ -1,7 +1,6 @@
 package com.iron.repository;
 
 import com.iron.model.Post;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

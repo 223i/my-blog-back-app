@@ -27,7 +27,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
 
         List<Object> params = new ArrayList<>();
         if (postTitle != null && !postTitle.isBlank()) {
-            sql.append(" WHERE title LIKE ?");
+            sql.append(" WHERE LOWER(title) LIKE LOWER(?)");
             params.add("%" + postTitle + "%");
         }
         sql.append(" ORDER BY id DESC LIMIT ? OFFSET ?");

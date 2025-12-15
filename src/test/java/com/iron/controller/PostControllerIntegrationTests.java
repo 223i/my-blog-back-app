@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,8 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @ActiveProfiles("test")
 @ContextConfiguration(classes = IntegrationTestConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PostControllerIntegrationTests {
 
     @Autowired
@@ -42,6 +43,19 @@ public class PostControllerIntegrationTests {
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).alwaysDo(print()).build();
+    }
+
+    @Test
+    void shouldReturnPostsWithSearchText() throws Exception {
+        mockMvc.perform(get("/api/posts")
+                        .param("search", "Spring")
+                        .param("pageNumber", "1")
+                        .param("pageSize", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posts").isArray())
+                .andExpect(jsonPath("$.posts.length()").value(greaterThan(0)))
+                .andExpect(jsonPath("$.posts[*].title",
+                        hasItem(containsStringIgnoringCase("Spring"))));
     }
 
     @Test
@@ -70,15 +84,6 @@ public class PostControllerIntegrationTests {
     }
 
     @Test
-    void shouldReturnPostsWithSearchText() throws Exception {
-        mockMvc.perform(get("/api/posts")
-                        .param("search", "Spring"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.posts").isArray())
-                .andExpect(jsonPath("$.posts[0].title").value(containsString("Spring")));
-    }
-
-    @Test
     void shouldReturnEmptyPostsWhenSearchNotFound() throws Exception {
         mockMvc.perform(get("/api/posts")
                         .param("search", "NonExistingPost"))
@@ -93,7 +98,7 @@ public class PostControllerIntegrationTests {
                         .param("pageSize", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastPage").value(2))
-                .andExpect(jsonPath("$.hasNext").value(true))
+                .andExpect(jsonPath("$.hasNext").value(false))
                 .andExpect(jsonPath("$.hasPrev").value(true));
     }
 

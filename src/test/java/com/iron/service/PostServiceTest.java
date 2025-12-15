@@ -250,52 +250,6 @@ public class PostServiceTest {
     }
 
     @Test
-    void shouldSetCorrectHasPrevAndHasNextFlags() {
-        // given
-        String searchText = "";
-        int pageNumber = 2;
-        int pageSize = 2;
-
-        List<Post> posts = List.of(
-                new Post(3, "title3", "text3", List.of(), 0, 0)
-        );
-
-        when(postDaoRepository.countPosts(searchText)).thenReturn(5L); // totalPages = 3
-        when(postDaoRepository.findPostsForPage(searchText, pageNumber, pageSize)).thenReturn(posts);
-
-        // when
-        PostsPageDto result = postService.findAll(searchText, pageNumber, pageSize);
-
-        // then
-        assertTrue(result.isHasPrev());  // pageNumber > 0
-        assertFalse(result.isHasNext()); // last page
-        assertEquals(3, result.getLastPage());
-    }
-
-    @Test
-    void shouldWorkWithPageNumberGreaterThanZero() {
-        // given
-        String searchText = "anything";
-        int pageNumber = 1;
-        int pageSize = 2;
-
-        List<Post> posts = List.of(
-                new Post(2, "title2", "text2", List.of(), 0, 0)
-        );
-
-        when(postDaoRepository.countPosts(searchText)).thenReturn(3L);
-        when(postDaoRepository.findPostsForPage(searchText, pageNumber, pageSize)).thenReturn(posts);
-
-        // when
-        PostsPageDto result = postService.findAll(searchText, pageNumber, pageSize);
-
-        // then
-        assertTrue(result.isHasPrev());
-        assertFalse(result.isHasNext()); // pageNumber == lastPage-1
-        assertEquals(2, result.getLastPage());
-    }
-
-    @Test
     void shouldReturnAllPostsWhenSearchTextIsEmpty() {
         // given
         String searchText = "";

@@ -14,7 +14,7 @@
 
 Gradle:
 `
-./gradlew build
+./gradlew clean build
 `
 
 После сборки артефакт (.war) появится в build/libs/.
@@ -23,7 +23,7 @@ Gradle:
 
 Для запуска юнит- и интеграционных тестов:
 
-`./gradlew test`
+`./gradlew clean test`
 
 Тесты используют JUnit 5 и Spring TestContext Framework.
 Результаты тестов можно найти в build/reports/tests/ или target/surefire-reports/.
@@ -33,7 +33,7 @@ Gradle:
 Собрать WAR:
 
 # Gradle
-`./gradlew war`
+`./gradlew clean war`
 
 Скопировать *.war в папку webapps Tomcat.
 Запустить контейнер.
