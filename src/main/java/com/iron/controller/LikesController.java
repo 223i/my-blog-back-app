@@ -18,7 +18,7 @@ public class LikesController {
     }
 
     @PostMapping("{id}/likes")
-    public ResponseEntity<Integer> incrementLikes(@PathVariable("id") String postId){
+    public ResponseEntity<Integer> incrementLikes(@PathVariable("id") Integer postId){
         Integer amountOfLikes = likesService.update(postId);
         return ResponseEntity.ok().body(amountOfLikes);
     }

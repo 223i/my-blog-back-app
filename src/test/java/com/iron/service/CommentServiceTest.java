@@ -41,7 +41,7 @@ public class CommentServiceTest {
 
     @Test
     void shouldReturnAllCommentsForPost() {
-        String postId = "1";
+        Integer postId = 1;
         List<Comment> comments = List.of(
                 new Comment(1, 1, "text1"),
                 new Comment(2, 1, "text2")
@@ -57,8 +57,8 @@ public class CommentServiceTest {
 
     @Test
     void shouldReturnCommentById() {
-        String postId = "1";
-        String commentId = "2";
+        Integer postId = 1;
+        Integer commentId = 2;
         Comment comment = new Comment(2, 1, "text2");
 
         when(commentDaoRepository.findCommentById(1, 2)).thenReturn(comment);
@@ -71,7 +71,7 @@ public class CommentServiceTest {
 
     @Test
     void shouldSaveComment() {
-        String postId = "1";
+        Integer postId = 1;
         CommentCreateDto dto = new CommentCreateDto("text1", 1);
         Comment entity = new Comment(null, 1, "text1");
         Comment saved = new Comment(1, 1, "text1");
@@ -90,8 +90,8 @@ public class CommentServiceTest {
 
     @Test
     void shouldUpdateComment() {
-        String postId = "1";
-        String commentId = "2";
+        Integer postId = 1;
+        Integer commentId = 2;
         CommentUpdateDto dto = new CommentUpdateDto(2, "updated text", 1);
         Comment updated = new Comment(2, 1, "updated text");
 
@@ -109,23 +109,11 @@ public class CommentServiceTest {
 
     @Test
     void shouldDeleteComment() {
-        String postId = "1";
-        String commentId = "2";
+        Integer postId = 1;
+        Integer commentId = 2;
 
         commentService.delete(postId, commentId);
 
         verify(commentDaoRepository, times(1)).deleteById(1, 2);
     }
-
-    @Test
-    void shouldThrowExceptionIfDeleteIdIsInvalid() {
-        String postId = "1";
-        String commentId = "abc";
-
-        assertThrows(NumberFormatException.class,
-                () -> commentService.delete(postId, commentId));
-
-        verify(commentDaoRepository, never()).deleteById(anyInt(), anyInt());
-    }
-
 }

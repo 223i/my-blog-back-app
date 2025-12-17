@@ -20,28 +20,28 @@ public class CommentsController {
     }
 
     @GetMapping
-    public List<Comment> getAllComments(@PathVariable("post_id") String post_id) {
+    public List<Comment> getAllComments(@PathVariable("post_id") Integer post_id) {
         return commentService.findAll(post_id);
     }
 
     @GetMapping("/{id}")
-    public Comment getCommentById(@PathVariable("post_id") String post_id, @PathVariable("id") String id) {
+    public Comment getCommentById(@PathVariable("post_id") Integer post_id, @PathVariable("id") Integer id) {
         return commentService.findCommentById(post_id, id);
     }
 
     @PostMapping
-    public Comment createComment(@PathVariable("post_id") String post_id, @Valid @RequestBody CommentCreateDto comment) {
+    public Comment createComment(@PathVariable("post_id") Integer post_id, @Valid @RequestBody CommentCreateDto comment) {
         return commentService.save(post_id, comment);
     }
 
     @PutMapping("/{id}")
-    public Comment updateComment(@PathVariable("post_id") String post_id, @PathVariable("id") String commentId,
+    public Comment updateComment(@PathVariable("post_id") Integer post_id, @PathVariable("id") Integer commentId,
                                  @Valid @RequestBody CommentUpdateDto comment) {
         return commentService.update(post_id, commentId, comment);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteComment(@PathVariable("post_id") String post_id, @PathVariable("id") String id) {
+    public void deleteComment(@PathVariable("post_id") Integer post_id, @PathVariable("id") Integer id) {
         commentService.delete(post_id, id);
     }
 }

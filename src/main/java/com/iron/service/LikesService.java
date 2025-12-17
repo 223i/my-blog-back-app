@@ -13,9 +13,9 @@ public class LikesService {
         this.postRepository = postRepository;
     }
 
-    public Integer update(String postId){
-        Post post = postRepository.findPostById(Integer.valueOf(postId));
-        post.setLikesCount(post.getLikesCount()+1);
+    public Integer update(Integer postId) {
+        Post post = postRepository.findPostById(postId);
+        post.setLikesCount(post.getLikesCount() + 1);
         postRepository.update(post);
         return post.getLikesCount();
     }

@@ -18,7 +18,7 @@ public class ImagesController {
     }
 
     @GetMapping
-    public ResponseEntity<byte[]> getPostImage(@PathVariable("post_id") String postId) {
+    public ResponseEntity<byte[]> getPostImage(@PathVariable("post_id") Integer postId) {
         try {
             byte[] image = imageService.getImage(postId);
             if (image == null || image.length == 0) {
@@ -35,7 +35,7 @@ public class ImagesController {
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateImage(@PathVariable("post_id") String postId,
+    public ResponseEntity<Void> updateImage(@PathVariable("post_id") Integer postId,
                                             @RequestParam("image") MultipartFile file) {
         imageService.uploadImage(postId, file);
         return ResponseEntity.ok().build();

@@ -41,12 +41,11 @@ public class ImageServiceTest {
 
     @Test
     void shouldReturnImageBytes() {
-        String postId = "1";
         byte[] imageBytes = new byte[]{1, 2, 3};
 
         when(imagesDaoRepository.getImage(1)).thenReturn(imageBytes);
 
-        byte[] result = imageService.getImage(postId);
+        byte[] result = imageService.getImage(1);
 
         assertArrayEquals(imageBytes, result);
         verify(imagesDaoRepository, times(1)).getImage(1);
@@ -54,11 +53,11 @@ public class ImageServiceTest {
 
     @Test
     void shouldUploadImageSuccessfully() throws Exception {
-        String postId = "1";
+
         MultipartFile file = mock(MultipartFile.class);
         when(postDaoRepository.findPostById(1)).thenReturn(new Post());
 
-        imageService.uploadImage(postId, file);
+        imageService.uploadImage(1, file);
 
         verify(postDaoRepository, times(1)).findPostById(1);
         verify(imagesDaoRepository, times(1)).saveImage(1, file);
@@ -66,12 +65,12 @@ public class ImageServiceTest {
 
     @Test
     void shouldThrowExceptionIfPostNotFound()  {
-        String postId = "1";
+
         MultipartFile file = mock(MultipartFile.class);
 
         when(postDaoRepository.findPostById(1)).thenThrow(new NoSuchElementException());
 
-        assertThrows(NoSuchElementException.class, () -> imageService.uploadImage(postId, file));
+        assertThrows(NoSuchElementException.class, () -> imageService.uploadImage(1, file));
 
         verify(postDaoRepository, times(1)).findPostById(1);
         verify(imagesDaoRepository, never()).saveImage(anyInt(), (MultipartFile) any());

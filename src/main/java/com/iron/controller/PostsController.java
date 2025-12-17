@@ -27,7 +27,7 @@ public class PostsController {
     }
 
     @GetMapping("/{id}")
-    public Post getPostById(@PathVariable("id") String id) {
+    public Post getPostById(@PathVariable("id") Integer id) {
         return postService.findPostById(id);
     }
 
@@ -37,12 +37,12 @@ public class PostsController {
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable("id") String id, @Valid @RequestBody PostUpdateDto post) {
+    public Post updatePost(@PathVariable("id") Integer id, @Valid @RequestBody PostUpdateDto post) {
         return postService.update(id, post);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable("id") String id) {
+    public void deletePost(@PathVariable("id") Integer id) {
         postService.delete(id);
     }
 }

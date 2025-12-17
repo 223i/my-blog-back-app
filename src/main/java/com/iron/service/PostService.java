@@ -35,19 +35,18 @@ public class PostService {
         return response;
     }
 
-    public Post findPostById(String id){
-        return postDaoRepository.findPostById(Integer.valueOf(id));
+    public Post findPostById(Integer id){
+        return postDaoRepository.findPostById(id);
     }
 
     public Post save (PostCreateDto post){
         return postDaoRepository.save(postDtoMapper.postCreateDtoToEntity(post));
     }
 
-    public Post update(String id, PostUpdateDto post){
-        Integer postId = Integer.valueOf(id);
-        Post existingPost = postDaoRepository.findPostById(postId);
+    public Post update(Integer id, PostUpdateDto post){
+        Post existingPost = postDaoRepository.findPostById(id);
         Post updatedPost = postDtoMapper.postUpdateDtoToEntity(post);
-        updatedPost.setId(postId);
+        updatedPost.setId(id);
 
         if (existingPost != null) {
             // Сохраняем текущие значения счетчиков
@@ -60,10 +59,10 @@ public class PostService {
         }
 
         postDaoRepository.update(updatedPost);
-        return postDaoRepository.findPostById(postId);
+        return postDaoRepository.findPostById(id);
     }
 
-    public void delete(String id){
-         postDaoRepository.deleteById(Integer.valueOf(id));
+    public void delete(Integer id){
+         postDaoRepository.deleteById(id);
     }
 }

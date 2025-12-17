@@ -65,7 +65,7 @@ public class PostServiceTest {
         when(postDaoRepository.findPostById(any(Integer.class))).thenReturn(validPost);
 
         //when
-        Post result = postService.update("1", postUpdateDto);
+        Post result = postService.update(1, postUpdateDto);
 
         //then
         verify(postDaoRepository, times(1)).update(captor.capture());
@@ -111,7 +111,7 @@ public class PostServiceTest {
         ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
 
         // when
-        postService.update("1", postUpdateDto);
+        postService.update(1, postUpdateDto);
 
         // then
         verify(postDaoRepository).update(captor.capture());
@@ -125,7 +125,7 @@ public class PostServiceTest {
     @Test
     public void checkDeletePostCalledOneTime() {
         //when
-        postService.delete("1");
+        postService.delete(1);
 
         //then
         verify(postDaoRepository, times(1)).deleteById(any(Integer.class));
@@ -137,18 +137,11 @@ public class PostServiceTest {
         ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
 
         //when
-        postService.delete("1");
+        postService.delete(1);
 
         //then
         verify(postDaoRepository).deleteById(captor.capture());
         assertEquals(1, captor.getValue());
-    }
-
-    @Test
-    public void checkDeleteIfWrongParameterTypePassed() {
-        assertThrows(NumberFormatException.class,
-                () -> postService.delete("abc"));
-        verify(postDaoRepository, never()).deleteById(any());
     }
 
     @Test
@@ -157,7 +150,7 @@ public class PostServiceTest {
                 .when(postDaoRepository).deleteById(1);
 
         assertThrows(EmptyResultDataAccessException.class,
-                () -> postService.delete("1"));
+                () -> postService.delete(1));
     }
 
 
@@ -168,7 +161,7 @@ public class PostServiceTest {
         when(postDaoRepository.findPostById(any(Integer.class))).thenReturn(validPost);
 
         // when
-        Post result = postService.findPostById("1");
+        Post result = postService.findPostById(1);
 
         // then
         verify(postDaoRepository, times(1)).findPostById(any(Integer.class));
@@ -186,16 +179,8 @@ public class PostServiceTest {
                 .when(postDaoRepository).findPostById(1);
 
         assertThrows(EmptyResultDataAccessException.class,
-                () -> postService.findPostById("1"));
+                () -> postService.findPostById(1));
     }
-
-    @Test
-    public void checkFindPostByIdIfWrongParameterTypePassed() {
-        assertThrows(NumberFormatException.class,
-                () -> postService.findPostById("abc"));
-        verify(postDaoRepository, never()).findPostById(any());
-    }
-
 
     @Test
     void shouldReturnPostsPage_whenResultsExist() {

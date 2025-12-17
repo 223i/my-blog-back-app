@@ -17,13 +17,13 @@ public class ImageService {
     }
 
 
-    public byte[] getImage(String post_id) {
-        return imagesRepository.getImage(Integer.valueOf(post_id));
+    public byte[] getImage(Integer post_id) {
+        return imagesRepository.getImage(post_id);
     }
 
-    public void uploadImage(String post_id, MultipartFile file) {
-        postDaoRepository.findPostById(Integer.valueOf(post_id)); //проверяем что пост с таким айди существует
-        imagesRepository.saveImage(Integer.valueOf(post_id), file);
+    public void uploadImage(Integer post_id, MultipartFile file) {
+        postDaoRepository.findPostById(post_id); //проверяем что пост с таким айди существует
+        imagesRepository.saveImage(post_id, file);
     }
 
 }

@@ -34,7 +34,7 @@ public class LikesServiceTest {
     @Test
     void shouldIncreaseLikesCountAndReturnNewValue() {
         // given
-        String postId = "1";
+        Integer postId = 1;
         Post existingPost = new Post();
         existingPost.setId(1);
         existingPost.setLikesCount(5);
@@ -67,7 +67,7 @@ public class LikesServiceTest {
         when(postRepository.findPostById(1)).thenReturn(post);
 
         // when
-        Integer result = likesService.update("1");
+        Integer result = likesService.update(1);
 
         // then
         assertEquals(1, result);
@@ -81,7 +81,7 @@ public class LikesServiceTest {
 
         // then
         assertThrows(NullPointerException.class,
-                () -> likesService.update("1"));
+                () -> likesService.update(1));
 
         verify(postRepository, times(1)).findPostById(1);
         verify(postRepository, never()).update(any());
