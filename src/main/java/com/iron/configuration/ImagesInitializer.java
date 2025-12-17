@@ -2,12 +2,14 @@ package com.iron.configuration;
 
 import com.iron.repository.ImagesDaoRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 
+@Slf4j
 @Component
 @Profile("!test")
 public class ImagesInitializer {
@@ -37,13 +39,12 @@ public class ImagesInitializer {
                 try {
                     byte[] imageBytes = Files.readAllBytes(resource.getFile().toPath());
                     imagesDaoRepository.saveImage(postId, imageBytes);
-                    System.out.println("Загружено изображение для postId=" + postId);
+                    log.info("Загружено изображение для postId={}", postId);
                 } catch (Exception e) {
-                    System.err.println("Ошибка при загрузке файла для postId=" + postId);
-                    e.printStackTrace();
+                    log.error("Ошибка при загрузке файла для postId={}", postId, e);
                 }
             } else {
-                System.err.println("Файл для postId=" + postId + " не найден");
+                log.error("Файл для postId={} не найден", postId);
             }
         }
     }
