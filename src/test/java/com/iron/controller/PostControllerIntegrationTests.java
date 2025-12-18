@@ -42,7 +42,8 @@ public class PostControllerIntegrationTests {
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).alwaysDo(print()).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .alwaysDo(print()).build();
     }
 
     @Test
@@ -114,7 +115,9 @@ public class PostControllerIntegrationTests {
     @Test
     void shouldReturn404ForNonExistingPost() throws Exception {
         mockMvc.perform(get("/api/posts/{id}", 999))
-                .andExpect(content().string(containsString("Post with id=999 not found")));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message")
+                        .value("Post with id=999 not found"));
     }
 
     @Test
