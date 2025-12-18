@@ -1,11 +1,10 @@
 package com.iron.configuration;
 
+import jakarta.annotation.PostConstruct;
 import org.h2.Driver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -16,19 +15,24 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfiguration {
 
-    @Bean
-    public DataSource dataSource(
+    private final DataSource dataSource;
+
+    public DataSourceConfiguration(
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String username,
             @Value("${spring.datasource.password}") String password
     ) {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(Driver.class.getName());
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        ds.setDriverClassName(Driver.class.getName());
+        ds.setUrl(url);
+        ds.setUsername(username);
+        ds.setPassword(password);
+        this.dataSource = ds;
+    }
 
-        return dataSource;
+    @Bean
+    public DataSource dataSource() {
+        return this.dataSource;
     }
 
     @Bean
@@ -36,13 +40,11 @@ public class DataSourceConfiguration {
         return new JdbcTemplate(dataSource);
     }
 
-    @EventListener
-    public void populate(ContextRefreshedEvent event) {
-        DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
-
+    @PostConstruct
+    public void populateDatabase() {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("schema.sql"));
         populator.addScript(new ClassPathResource("data.sql"));
-        populator.execute(dataSource);
+        populator.execute(this.dataSource);
     }
 }
