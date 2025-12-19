@@ -23,13 +23,13 @@ dependencies {
     providedCompile("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
     implementation("jakarta.el:jakarta.el-api:5.0.0")
+    implementation("org.springframework:spring-tx")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.0")
 
     implementation("com.h2database:h2:2.2.224")
-
     implementation("org.springframework.data:spring-data-jdbc:3.4.1")
 
 

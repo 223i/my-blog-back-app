@@ -8,6 +8,7 @@ import com.iron.mapper.PostDtoMapper;
 import com.iron.model.Post;
 import com.iron.repository.PostDaoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,11 +42,13 @@ public class PostService {
         return  postDtoMapper.postEntityToPostResponseDto(post);
     }
 
+    @Transactional
     public PostResponseDto save (PostCreateDto post){
         Post savedPost =  postDaoRepository.save(postDtoMapper.postCreateDtoToEntity(post));
         return postDtoMapper.postEntityToPostResponseDto(savedPost);
     }
 
+    @Transactional
     public PostResponseDto update(Integer id, PostUpdateDto post){
         Post existingPost = postDaoRepository.findPostById(id);
         Post updatedPost = postDtoMapper.postUpdateDtoToEntity(post);
@@ -65,6 +68,7 @@ public class PostService {
         return postDtoMapper.postEntityToPostResponseDto(updatedPost2);
     }
 
+    @Transactional
     public void delete(Integer id){
          postDaoRepository.deleteById(id);
     }

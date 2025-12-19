@@ -7,6 +7,7 @@ import com.iron.mapper.CommentDtoMapper;
 import com.iron.model.Comment;
 import com.iron.repository.CommentDaoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,19 +34,21 @@ public class CommentService {
         return commentDtoMapper.commentEntityToCommentResponseDto(comment);
     }
 
-
+    @Transactional
     public CommentResponseDto save(Integer post_id, CommentCreateDto comment) {
         Comment savedComment = commentDaoRepository.save(post_id,
                 commentDtoMapper.commentCreateDtoToEntity(comment));
         return commentDtoMapper.commentEntityToCommentResponseDto(savedComment);
     }
 
+    @Transactional
     public CommentResponseDto update(Integer post_id, Integer commentId, CommentUpdateDto comment) {
         commentDaoRepository.update(post_id, commentDtoMapper.commentUpdateDtoToEntity(comment));
         Comment updatedComment = commentDaoRepository.findCommentById(post_id, commentId);
         return commentDtoMapper.commentEntityToCommentResponseDto(updatedComment);
     }
 
+    @Transactional
     public void delete(Integer post_id, Integer id) {
         commentDaoRepository.deleteById(post_id, id);
     }
