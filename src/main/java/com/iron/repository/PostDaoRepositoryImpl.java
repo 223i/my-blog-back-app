@@ -139,7 +139,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     @Override
     @Transactional
     public void update(Post post) {
-        // Обновляем сам пост
+
         String sqlPost = "UPDATE posts SET title = ?, text = ?, likesCount = ?, commentsCount = ? WHERE id = ?";
         jdbcTemplate.update(sqlPost,
                 post.getTitle(),
@@ -148,12 +148,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
                 safeCount(post.getCommentsCount()),
                 post.getId());
 
-        // Обновляем теги
         updatePostTags(post);
-
-        // Обновляем значения в объекте
-        post.setLikesCount(safeCount(post.getLikesCount()));
-        post.setCommentsCount(safeCount(post.getCommentsCount()));
     }
 
     @Transactional
@@ -230,7 +225,6 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
                 )
         );
     }
-    // Получаем ID тега из базы или создаем новый
 
     private Integer getOrCreateTagId(String tag) {
         Integer tagId = jdbcTemplate.query(

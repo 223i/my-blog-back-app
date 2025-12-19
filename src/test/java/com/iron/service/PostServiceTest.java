@@ -1,6 +1,7 @@
 package com.iron.service;
 
 import com.iron.dto.post.PostCreateDto;
+import com.iron.dto.post.PostResponseDto;
 import com.iron.dto.post.PostUpdateDto;
 import com.iron.dto.post.PostsPageDto;
 import com.iron.model.Post;
@@ -43,7 +44,7 @@ public class PostServiceTest {
                 List.of("tag1", "tag2"), 5, 1);
         when(postDaoRepository.save(any(Post.class))).thenReturn(validPost);
 
-        Post result = postService.save(postCreateDto);
+        PostResponseDto result = postService.save(postCreateDto);
 
         assertNotNull(result);
         assertEquals(1, result.getId());
@@ -65,7 +66,7 @@ public class PostServiceTest {
         when(postDaoRepository.findPostById(any(Integer.class))).thenReturn(validPost);
 
         //when
-        Post result = postService.update(1, postUpdateDto);
+        PostResponseDto result = postService.update(1, postUpdateDto);
 
         //then
         verify(postDaoRepository, times(1)).update(captor.capture());
@@ -83,13 +84,27 @@ public class PostServiceTest {
     @Test
     public void checkCreatePostEntityBuildCorrectly() {
         // given
-        PostCreateDto postCreateDto = new PostCreateDto("post title", "post text",
-                List.of("tag1", "tag2"), 5, 1);
+        PostCreateDto postCreateDto = new PostCreateDto(
+                "post title",
+                "post text",
+                List.of("tag1", "tag2"),
+                5,
+                1
+        );
 
+        Post savedPost = new Post(
+                1,
+                postCreateDto.getTitle(),
+                postCreateDto.getText(),
+                postCreateDto.getTags(),
+                postCreateDto.getLikesCount(),
+                postCreateDto.getCommentsCount()
+        );
+        when(postDaoRepository.save(any(Post.class))).thenReturn(savedPost);
         ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
 
         // when
-        postService.save(postCreateDto);
+        PostResponseDto response = postService.save(postCreateDto);
 
         // then
         verify(postDaoRepository).save(captor.capture());
@@ -100,7 +115,13 @@ public class PostServiceTest {
         assertEquals(postCreateDto.getTags(), postToSave.getTags());
         assertEquals(postCreateDto.getLikesCount(), postToSave.getLikesCount());
         assertEquals(postCreateDto.getCommentsCount(), postToSave.getCommentsCount());
-        verify(postDaoRepository, times(1)).save(any(Post.class));
+
+        assertEquals(savedPost.getId(), response.getId());
+        assertEquals(savedPost.getTitle(), response.getTitle());
+        assertEquals(savedPost.getText(), response.getText());
+        assertEquals(savedPost.getTags(), response.getTags());
+        assertEquals(savedPost.getLikesCount(), response.getLikesCount());
+        assertEquals(savedPost.getCommentsCount(), response.getCommentsCount());
     }
 
     @Test
@@ -108,6 +129,10 @@ public class PostServiceTest {
         // given
         PostUpdateDto postUpdateDto = new PostUpdateDto(1, "post title", "post text",
                 List.of("tag1", "tag2"));
+
+        Post existingPost = new Post(1, "old title", "old text", List.of("oldTag"), 5, 2);
+        when(postDaoRepository.findPostById(1)).thenReturn(existingPost);
+
         ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
 
         // when
@@ -161,7 +186,7 @@ public class PostServiceTest {
         when(postDaoRepository.findPostById(any(Integer.class))).thenReturn(validPost);
 
         // when
-        Post result = postService.findPostById(1);
+        PostResponseDto result = postService.findPostById(1);
 
         // then
         verify(postDaoRepository, times(1)).findPostById(any(Integer.class));

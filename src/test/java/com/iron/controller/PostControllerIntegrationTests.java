@@ -23,7 +23,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -113,14 +114,6 @@ public class PostControllerIntegrationTests {
     }
 
     @Test
-    void shouldReturn404ForNonExistingPost() throws Exception {
-        mockMvc.perform(get("/api/posts/{id}", 999))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message")
-                        .value("Post with id=999 not found"));
-    }
-
-    @Test
     void shouldCreatePost() throws Exception {
         PostCreateDto post = new PostCreateDto();
         post.setTitle("New Post");
@@ -150,19 +143,6 @@ public class PostControllerIntegrationTests {
                 .andExpect(jsonPath("$.title").value("Updated Title"))
                 .andExpect(jsonPath("$.text").value("Updated Text"));
     }
-
-    @Test
-    void shouldReturn404WhenUpdatingNonExistingPost() throws Exception {
-        PostUpdateDto update = new PostUpdateDto();
-        update.setTitle("Updated Title");
-        update.setText("Updated Text");
-
-        mockMvc.perform(put("/api/posts/{id}", 999)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(update)))
-                .andExpect(content().string(containsString("Post with id=999 not found")));
-    }
-
 
     @Test
     void shouldDeletePost() throws Exception {

@@ -1,11 +1,12 @@
 package com.iron.service;
 
+import com.iron.config.UnitTestConfig;
 import com.iron.dto.comment.CommentCreateDto;
+import com.iron.dto.comment.CommentResponseDto;
 import com.iron.dto.comment.CommentUpdateDto;
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.model.Comment;
 import com.iron.repository.CommentDaoRepository;
-import com.iron.config.UnitTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +16,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -47,11 +51,23 @@ public class CommentServiceTest {
                 new Comment(2, 1, "text2")
         );
 
-        when(commentDaoRepository.findAll(1)).thenReturn(comments);
+        when(commentDaoRepository.findAll(postId)).thenReturn(comments);
 
-        List<Comment> result = commentService.findAll(postId);
+        Map<Integer, Comment> commentById = comments.stream()
+                .collect(Collectors.toMap(Comment::getId, Function.identity()));
 
-        assertEquals(comments, result);
+        List<CommentResponseDto> result = commentService.findAll(postId);
+
+        assertEquals(comments.size(), result.size());
+        result.forEach(dto -> {
+            Comment comment = commentById.get(dto.getId());
+            assertNotNull(comment);
+
+            assertEquals(comment.getPostId(), dto.getPostId());
+            assertEquals(comment.getText(), dto.getText());
+        });
+
+
         verify(commentDaoRepository, times(1)).findAll(1);
     }
 
@@ -63,9 +79,12 @@ public class CommentServiceTest {
 
         when(commentDaoRepository.findCommentById(1, 2)).thenReturn(comment);
 
-        Comment result = commentService.findCommentById(postId, commentId);
+        CommentResponseDto result = commentService.findCommentById(postId, commentId);
 
-        assertEquals(comment, result);
+        assertNotNull(result);
+        assertEquals(result.getPostId(), comment.getPostId());
+        assertEquals(result.getText(), comment.getText());
+
         verify(commentDaoRepository, times(1)).findCommentById(1, 2);
     }
 
@@ -78,9 +97,11 @@ public class CommentServiceTest {
 
         when(commentDaoRepository.save(any(Integer.class), any(Comment.class))).thenReturn(saved);
 
-        Comment result = commentService.save(postId, dto);
+        CommentResponseDto result = commentService.save(postId, dto);
 
-        assertEquals(saved, result);
+        assertNotNull(result);
+        assertEquals(result.getPostId(), dto.getPostId());
+        assertEquals(result.getText(), dto.getText());
 
         ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
         verify(commentDaoRepository).save(eq(1), captor.capture());
@@ -97,14 +118,12 @@ public class CommentServiceTest {
 
         when(commentDaoRepository.findCommentById(1, updated.getId())).thenReturn(updated);
 
-        Comment result = commentService.update(postId, commentId,  dto);
-
-        assertEquals(updated, result);
+        CommentResponseDto result = commentService.update(postId, commentId,  dto);
 
         ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
         verify(commentDaoRepository).update(eq(1), captor.capture());
-        assertEquals(updated.getText(), captor.getValue().getText());
-        assertEquals(updated.getPostId(), captor.getValue().getPostId());
+        assertEquals(result.getText(), captor.getValue().getText());
+        assertEquals(result.getPostId(), captor.getValue().getPostId());
     }
 
     @Test

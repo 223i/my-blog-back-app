@@ -1,6 +1,7 @@
 package com.iron.service;
 
 import com.iron.dto.comment.CommentCreateDto;
+import com.iron.dto.comment.CommentResponseDto;
 import com.iron.dto.comment.CommentUpdateDto;
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.model.Comment;
@@ -20,23 +21,29 @@ public class CommentService {
         this.commentDtoMapper = commentDtoMapper;
     }
 
-    public List<Comment> findAll(Integer post_id) {
-        return commentDaoRepository.findAll(post_id);
+    public List<CommentResponseDto> findAll(Integer post_id) {
+        List<Comment> comments = commentDaoRepository.findAll(post_id);
+        return comments.stream()
+                .map(commentDtoMapper::commentEntityToCommentResponseDto)
+                .toList();
     }
 
-    public Comment findCommentById(Integer post_id, Integer id) {
-        return commentDaoRepository.findCommentById(post_id, id);
+    public CommentResponseDto findCommentById(Integer post_id, Integer id) {
+        Comment comment = commentDaoRepository.findCommentById(post_id, id);
+        return commentDtoMapper.commentEntityToCommentResponseDto(comment);
     }
 
-    public Comment save(Integer post_id, CommentCreateDto comment) {
-        return commentDaoRepository.save(post_id,
+
+    public CommentResponseDto save(Integer post_id, CommentCreateDto comment) {
+        Comment savedComment = commentDaoRepository.save(post_id,
                 commentDtoMapper.commentCreateDtoToEntity(comment));
+        return commentDtoMapper.commentEntityToCommentResponseDto(savedComment);
     }
 
-    public Comment update(Integer post_id, Integer commentId, CommentUpdateDto comment) {
-        commentDaoRepository.update(post_id,
-                commentDtoMapper.commentUpdateDtoToEntity(comment));
-        return commentDaoRepository.findCommentById(post_id, commentId);
+    public CommentResponseDto update(Integer post_id, Integer commentId, CommentUpdateDto comment) {
+        commentDaoRepository.update(post_id, commentDtoMapper.commentUpdateDtoToEntity(comment));
+        Comment updatedComment = commentDaoRepository.findCommentById(post_id, commentId);
+        return commentDtoMapper.commentEntityToCommentResponseDto(updatedComment);
     }
 
     public void delete(Integer post_id, Integer id) {

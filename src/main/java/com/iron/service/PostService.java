@@ -1,6 +1,7 @@
 package com.iron.service;
 
 import com.iron.dto.post.PostCreateDto;
+import com.iron.dto.post.PostResponseDto;
 import com.iron.dto.post.PostUpdateDto;
 import com.iron.dto.post.PostsPageDto;
 import com.iron.mapper.PostDtoMapper;
@@ -35,15 +36,17 @@ public class PostService {
         return response;
     }
 
-    public Post findPostById(Integer id){
-        return postDaoRepository.findPostById(id);
+    public PostResponseDto findPostById(Integer id){
+        Post post =  postDaoRepository.findPostById(id);
+        return  postDtoMapper.postEntityToPostResponseDto(post);
     }
 
-    public Post save (PostCreateDto post){
-        return postDaoRepository.save(postDtoMapper.postCreateDtoToEntity(post));
+    public PostResponseDto save (PostCreateDto post){
+        Post savedPost =  postDaoRepository.save(postDtoMapper.postCreateDtoToEntity(post));
+        return postDtoMapper.postEntityToPostResponseDto(savedPost);
     }
 
-    public Post update(Integer id, PostUpdateDto post){
+    public PostResponseDto update(Integer id, PostUpdateDto post){
         Post existingPost = postDaoRepository.findPostById(id);
         Post updatedPost = postDtoMapper.postUpdateDtoToEntity(post);
         updatedPost.setId(id);
@@ -57,9 +60,9 @@ public class PostService {
             updatedPost.setLikesCount(0);
             updatedPost.setCommentsCount(0);
         }
-
         postDaoRepository.update(updatedPost);
-        return postDaoRepository.findPostById(id);
+        Post updatedPost2 = postDaoRepository.findPostById(id);
+        return postDtoMapper.postEntityToPostResponseDto(updatedPost2);
     }
 
     public void delete(Integer id){
