@@ -36,7 +36,7 @@ Gradle:
 `./gradlew clean war`
 
 Скопировать *.war в папку webapps Tomcat.
-Запустить контейнер.
+Запустить Tomcat контейнер (./startup.sh)
 Приложение будет доступно по адресу:
 http://localhost:8080/<context-path>
 
