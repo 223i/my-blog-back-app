@@ -6,7 +6,9 @@ import com.iron.dto.post.PostUpdateDto;
 import com.iron.dto.post.PostsPageDto;
 import com.iron.mapper.PostDtoMapper;
 import com.iron.model.Post;
+import com.iron.model.PostSearchCriteria;
 import com.iron.repository.PostDaoRepository;
+import com.iron.util.exceptionHandler.PostSearchParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +20,22 @@ public class PostService {
 
     private final PostDaoRepository postDaoRepository;
     private final PostDtoMapper postDtoMapper;
+    private final PostSearchParser postSearchParser;
 
-    public PostService(PostDaoRepository postDaoRepository, PostDtoMapper postDtoMapper) {
+    public PostService(PostDaoRepository postDaoRepository, PostDtoMapper postDtoMapper,
+                       PostSearchParser postSearchParser) {
         this.postDaoRepository = postDaoRepository;
         this.postDtoMapper = postDtoMapper;
+        this.postSearchParser = postSearchParser;
     }
 
     public PostsPageDto findAll(String searchText, Integer pageNumber, Integer pageSize){
-        long totalElements = postDaoRepository.countPosts(searchText);
+        PostSearchCriteria searchCriteria = postSearchParser.parse(searchText);
 
+        long totalElements = postDaoRepository.countPosts(searchCriteria);
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
-        List<Post> postsForPage = postDaoRepository.findPostsForPage(searchText, pageNumber, pageSize);
+        List<Post> postsForPage = postDaoRepository.findPostsForPage(searchCriteria, pageNumber, pageSize);
+
         PostsPageDto response = new PostsPageDto();
         response.setPosts(postsForPage);
         response.setHasPrev(pageNumber > 1);

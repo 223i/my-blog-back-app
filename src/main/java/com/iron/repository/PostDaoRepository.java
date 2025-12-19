@@ -1,14 +1,15 @@
 package com.iron.repository;
 
 import com.iron.model.Post;
+import com.iron.model.PostSearchCriteria;
 
 import java.util.List;
 
 public interface PostDaoRepository {
 
-    List<Post> findPostsForPage(String postTitle, int pageNumber, int pageSize);
+    List<Post> findPostsForPage(PostSearchCriteria postTitle, int pageNumber, int pageSize);
 
-    Long countPosts(String postTitle);
+    Long countPosts(PostSearchCriteria postTitle);
 
     Post findPostById(Integer id);
 

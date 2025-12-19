@@ -2,6 +2,7 @@ package com.iron.config;
 
 import com.iron.mapper.CommentDtoMapper;
 import com.iron.mapper.PostDtoMapper;
+import com.iron.model.PostSearchCriteria;
 import com.iron.repository.CommentDaoRepository;
 import com.iron.repository.ImagesDaoRepository;
 import com.iron.repository.PostDaoRepository;
@@ -9,6 +10,7 @@ import com.iron.service.CommentService;
 import com.iron.service.ImageService;
 import com.iron.service.LikesService;
 import com.iron.service.PostService;
+import com.iron.util.exceptionHandler.PostSearchParser;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +29,14 @@ public class UnitTestConfig {
     }
 
     @Bean
-    public PostService postService(PostDaoRepository repository, PostDtoMapper postDtoMapper) {
-        return new PostService(repository, postDtoMapper);
+    public PostSearchParser postSearchParser() {
+        return new PostSearchParser();
+    }
+
+    @Bean
+    public PostService postService(PostDaoRepository repository, PostDtoMapper postDtoMapper,
+                                   PostSearchParser postSearchParser) {
+        return new PostService(repository, postDtoMapper, postSearchParser);
     }
 
     @Bean
