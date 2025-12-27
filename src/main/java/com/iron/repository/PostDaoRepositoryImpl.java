@@ -38,7 +38,7 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
 
         List<Post> posts = jdbcTemplate.query(sql.toString(), params.toArray(), this::mapPost);
 
-        if (!posts.isEmpty() && criteria.getTags() != null && !criteria.getTags().isEmpty()) {
+        if (!posts.isEmpty()) {
             populateTagsForPosts(posts);
         }
 
@@ -249,10 +249,10 @@ public class PostDaoRepositoryImpl implements PostDaoRepository {
     }
 
     private void appendTagJoinIfNeeded(StringBuilder sql, PostSearchCriteria criteria) {
-        if (criteria.getTags() != null && !criteria.getTags().isEmpty()) {
+//        if (criteria.getTags() != null && !criteria.getTags().isEmpty()) {
             sql.append("JOIN post_tag pt ON p.id = pt.post_id ")
                     .append("JOIN tags t ON pt.tag_id = t.id ");
-        }
+//        }
     }
 
     private void appendWhereConditions(StringBuilder sql, List<Object> params, PostSearchCriteria criteria) {

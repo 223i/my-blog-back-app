@@ -1,7 +1,7 @@
 package com.iron.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iron.config.IntegrationTestConfig;
+
 import com.iron.dto.post.PostCreateDto;
 import com.iron.dto.post.PostUpdateDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ActiveProfiles("test")
-@ContextConfiguration(classes = IntegrationTestConfig.class)
+@ContextConfiguration(classes = com.iron.config.IntegrationTestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PostControllerIntegrationTests {
 
