@@ -70,7 +70,6 @@ class ImageControllerIntegrationTest {
                     byte[] body = result.getResponse().getContentAsByteArray();
                     assertTrue(body.length > 0, "Image should not be empty");
                 });
-        ;
     }
 
     @Test

@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -50,7 +51,7 @@ class LikesControllerIntegrationTest {
                 .andExpect(content().string(String.valueOf(initialLikes + 1)));
 
         Post after = postDaoRepository.findPostById(1);
-        assertTrue(after.getLikesCount().equals(initialLikes + 1));
+        assertEquals((int) after.getLikesCount(), initialLikes + 1);
     }
 
     @Test
@@ -64,6 +65,6 @@ class LikesControllerIntegrationTest {
                 .andExpect(content().string(String.valueOf(initialLikes + 1)));
 
         Post after = postDaoRepository.findPostById(2);
-        assertTrue(after.getLikesCount().equals(initialLikes + 1));
+        assertEquals((int) after.getLikesCount(), initialLikes + 1);
     }
 }
