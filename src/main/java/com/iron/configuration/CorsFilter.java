@@ -45,7 +45,7 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Max-Age", String.valueOf(CORS_MAX_AGE_SECONDS));
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK); // Статус 200 OK
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }

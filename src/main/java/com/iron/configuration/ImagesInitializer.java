@@ -1,9 +1,10 @@
 package com.iron.configuration;
 
 import com.iron.repository.ImagesDaoRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class ImagesInitializer {
         this.imagesDaoRepository = imagesDaoRepository;
     }
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void initImages() {
         for (int postId = 1; postId <= 11; postId++) {
             String[] extensions = {"png", "jpg", "jpeg"};

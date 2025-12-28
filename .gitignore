@@ -1,11 +1,8 @@
-.gradle
-build/
-gradle-app.setting
-!gradle/wrapper/gradle-wrapper.jar
-!gradle-wrapper.properties
-!**/src/main/**/build/
-!**/src/test/**/build/
-.kotlin
+../../Programming/my-blog-back-app/HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
 ### IntelliJ IDEA ###
 .idea

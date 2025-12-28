@@ -1,30 +1,27 @@
 package com.iron.controller;
 
-import com.iron.config.IntegrationTestConfig;
 import com.iron.model.Post;
 import com.iron.repository.PostDaoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+@SpringBootTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = IntegrationTestConfig.class)
+@AutoConfigureMockMvc
 class LikesControllerIntegrationTest {
 
     @Autowired
@@ -33,6 +30,7 @@ class LikesControllerIntegrationTest {
     @Autowired
     PostDaoRepository postDaoRepository;
 
+    @Autowired
     MockMvc mockMvc;
 
     @BeforeEach
@@ -53,7 +51,7 @@ class LikesControllerIntegrationTest {
                 .andExpect(content().string(String.valueOf(initialLikes + 1)));
 
         Post after = postDaoRepository.findPostById(1);
-        assertTrue(after.getLikesCount().equals(initialLikes + 1));
+        assertEquals((int) after.getLikesCount(), initialLikes + 1);
     }
 
     @Test
@@ -67,6 +65,6 @@ class LikesControllerIntegrationTest {
                 .andExpect(content().string(String.valueOf(initialLikes + 1)));
 
         Post after = postDaoRepository.findPostById(2);
-        assertTrue(after.getLikesCount().equals(initialLikes + 1));
+        assertEquals((int) after.getLikesCount(), initialLikes + 1);
     }
 }

@@ -1,20 +1,17 @@
 package com.iron.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iron.config.IntegrationTestConfig;
 import com.iron.dto.comment.CommentCreateDto;
 import com.iron.dto.comment.CommentUpdateDto;
 import com.iron.model.Comment;
 import com.iron.repository.CommentDaoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -27,10 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+@SpringBootTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = IntegrationTestConfig.class)
+@AutoConfigureMockMvc
 class CommentsControllerIntegrationTest {
 
     @Autowired
@@ -42,6 +38,7 @@ class CommentsControllerIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
     MockMvc mockMvc;
 
     @BeforeEach
@@ -72,6 +69,7 @@ class CommentsControllerIntegrationTest {
     void shouldCreateCommentForPost1() throws Exception {
         CommentCreateDto dto = new CommentCreateDto();
         dto.setText("Новый комментарий для теста");
+        dto.setPostId(1);
 
         mockMvc.perform(post("/api/posts/1/comments")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -7,15 +7,14 @@ import com.iron.dto.post.PostsPageDto;
 import com.iron.model.Post;
 import com.iron.model.PostSearchCriteria;
 import com.iron.repository.PostDaoRepository;
-import com.iron.config.UnitTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,11 +22,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = UnitTestConfig.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class PostServiceTest {
 
-    @Autowired
+    @MockitoBean
     private PostDaoRepository postDaoRepository;
 
     @Autowired
@@ -138,7 +137,7 @@ public class PostServiceTest {
         verify(postDaoRepository).countPosts(criteriaCaptor.capture());
         verify(postDaoRepository).findPostsForPage(criteriaCaptor.capture(), eq(pageNumber), eq(pageSize));
 
-        PostSearchCriteria usedCriteria = criteriaCaptor.getAllValues().get(0);
+        PostSearchCriteria usedCriteria = criteriaCaptor.getAllValues().getFirst();
         assertEquals("Spring", usedCriteria.getTitleSubstring());
         assertTrue(usedCriteria.getTags().isEmpty());
     }
@@ -155,13 +154,13 @@ public class PostServiceTest {
         PostsPageDto result = postService.findAll("#java #spring", pageNumber, pageSize);
 
         assertEquals(1, result.getPosts().size());
-        assertTrue(result.getPosts().get(0).getTags().containsAll(List.of("java", "spring")));
+        assertTrue(result.getPosts().getFirst().getTags().containsAll(List.of("java", "spring")));
 
         ArgumentCaptor<PostSearchCriteria> criteriaCaptor = ArgumentCaptor.forClass(PostSearchCriteria.class);
         verify(postDaoRepository).countPosts(criteriaCaptor.capture());
         verify(postDaoRepository).findPostsForPage(criteriaCaptor.capture(), eq(pageNumber), eq(pageSize));
 
-        PostSearchCriteria usedCriteria = criteriaCaptor.getAllValues().get(0);
+        PostSearchCriteria usedCriteria = criteriaCaptor.getAllValues().getFirst();
         assertEquals("", usedCriteria.getTitleSubstring());
         assertEquals(List.of("java", "spring"), usedCriteria.getTags());
     }
@@ -178,7 +177,7 @@ public class PostServiceTest {
         PostsPageDto result = postService.findAll("#java Spring Boot", pageNumber, pageSize);
 
         assertEquals(1, result.getPosts().size());
-        Post resultPost = result.getPosts().get(0);
+        Post resultPost = result.getPosts().getFirst();
         assertEquals("Spring Boot Guide", resultPost.getTitle());
         assertTrue(resultPost.getTags().contains("java"));
 
@@ -186,7 +185,7 @@ public class PostServiceTest {
         verify(postDaoRepository).countPosts(criteriaCaptor.capture());
         verify(postDaoRepository).findPostsForPage(criteriaCaptor.capture(), eq(pageNumber), eq(pageSize));
 
-        PostSearchCriteria usedCriteria = criteriaCaptor.getAllValues().get(0);
+        PostSearchCriteria usedCriteria = criteriaCaptor.getAllValues().getFirst();
         assertEquals("Spring Boot", usedCriteria.getTitleSubstring());
         assertEquals(List.of("java"), usedCriteria.getTags());
     }
