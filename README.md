@@ -1,48 +1,40 @@
 # my-blog-back-app
 
-Бэкенд веб-приложения блога, реализованный на Java 21 с использованием Spring Framework и работающий в  сервлет-контейнере Tomcat.
-
-Важно: проект использует чистый Spring MVC, без Spring Boot.
-
-## 📁 Репозиторий
-
-Код хранится в Git-репозитории на GitHub.
+Бэкенд веб-приложения блога, реализованный на Java 21 с использованием Spring Boot + Java21 + база данных H2.
 
 ## ⚙️ Сборка проекта
 
-Проект можно собрать с помощью Gradle:
+Проект можно собрать с помощью Maven:
 
-Gradle:
+Maven:
 `
-./gradlew clean build
+mvn clean package
 `
+## 🌐 Запуск бэкенда
 
-После сборки артефакт (.war) появится в build/libs/.
+Бэкенд доступен локально по адресу:
+
+http://localhost:8080
+
+Для запуска приложения достаточно запустить main метод в SpringBootBlogApplication классе или выполнить команду
+
+`
+mvn spring-boot:run
+`
 
 ## 🧪 Тестирование
 
 Для запуска юнит- и интеграционных тестов:
 
-`./gradlew clean test`
+`mvn test`
 
 Тесты используют JUnit 5 и Spring TestContext Framework.
 Результаты тестов можно найти в build/reports/tests/ или target/surefire-reports/.
 
-## 🚀 Деплой в сервлет-контейнер
-
-Собрать WAR:
-
-# Gradle
-`./gradlew clean war`
-
-Скопировать *.war в папку webapps Tomcat.
-Запустить Tomcat контейнер (./startup.sh)
-Приложение будет доступно по адресу:
-http://localhost:8080/<context-path>
 
 ## 🗄️ База данных
 
-Поддерживается in-memory базаа данных - H2.
+Поддерживается in-memory база данных - H2.
 Тестовые данные инициализируются через SQL-скрипты.
 
 ## 📡 REST API
@@ -214,9 +206,3 @@ PUT /api/posts/{post_id}/comments/{id}
 * Удаление комментария
 
 DELETE /api/posts/{post_id}/comments/{id}
-
-* 🌐 Запуск бэкенда
-
-Бэкенд доступен локально по адресу:
-
-http://localhost:8080
