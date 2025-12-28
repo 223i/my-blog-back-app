@@ -1,6 +1,5 @@
 package com.iron.service;
 
-import com.iron.config.UnitTestConfig;
 import com.iron.dto.comment.CommentCreateDto;
 import com.iron.dto.comment.CommentResponseDto;
 import com.iron.dto.comment.CommentUpdateDto;
@@ -9,39 +8,34 @@ import com.iron.model.Comment;
 import com.iron.repository.CommentDaoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.ArgumentCaptor;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = UnitTestConfig.class)
-public class CommentServiceTest {
-
-    @Autowired
-    private CommentDaoRepository commentDaoRepository;
+@SpringBootTest
+@ActiveProfiles("test")
+class CommentServiceTest {
 
     @Autowired
     private CommentDtoMapper commentDtoMapper;
+
+    @MockitoBean
+    private CommentDaoRepository commentDaoRepository;
 
     @Autowired
     private CommentService commentService;
 
     @BeforeEach
-    void resetMocks() {
+    void setup() {
         reset(commentDaoRepository);
     }
-
 
     @Test
     void shouldReturnAllCommentsForPost() {
@@ -53,22 +47,13 @@ public class CommentServiceTest {
 
         when(commentDaoRepository.findAll(postId)).thenReturn(comments);
 
-        Map<Integer, Comment> commentById = comments.stream()
-                .collect(Collectors.toMap(Comment::getId, Function.identity()));
-
         List<CommentResponseDto> result = commentService.findAll(postId);
 
         assertEquals(comments.size(), result.size());
-        result.forEach(dto -> {
-            Comment comment = commentById.get(dto.getId());
-            assertNotNull(comment);
+        assertEquals("text1", result.get(0).getText());
+        assertEquals("text2", result.get(1).getText());
 
-            assertEquals(comment.getPostId(), dto.getPostId());
-            assertEquals(comment.getText(), dto.getText());
-        });
-
-
-        verify(commentDaoRepository, times(1)).findAll(1);
+        verify(commentDaoRepository, times(1)).findAll(postId);
     }
 
     @Test
@@ -77,53 +62,54 @@ public class CommentServiceTest {
         Integer commentId = 2;
         Comment comment = new Comment(2, 1, "text2");
 
-        when(commentDaoRepository.findCommentById(1, 2)).thenReturn(comment);
+        when(commentDaoRepository.findCommentById(postId, commentId)).thenReturn(comment);
 
         CommentResponseDto result = commentService.findCommentById(postId, commentId);
 
         assertNotNull(result);
-        assertEquals(result.getPostId(), comment.getPostId());
-        assertEquals(result.getText(), comment.getText());
+        assertEquals(comment.getText(), result.getText());
+        assertEquals(comment.getPostId(), result.getPostId());
 
-        verify(commentDaoRepository, times(1)).findCommentById(1, 2);
+        verify(commentDaoRepository, times(1)).findCommentById(postId, commentId);
     }
 
     @Test
     void shouldSaveComment() {
         Integer postId = 1;
         CommentCreateDto dto = new CommentCreateDto("text1", 1);
-        Comment entity = new Comment(null, 1, "text1");
         Comment saved = new Comment(1, 1, "text1");
 
         when(commentDaoRepository.save(any(Integer.class), any(Comment.class))).thenReturn(saved);
 
         CommentResponseDto result = commentService.save(postId, dto);
 
-        assertNotNull(result);
-        assertEquals(result.getPostId(), dto.getPostId());
-        assertEquals(result.getText(), dto.getText());
+        assertEquals(dto.getText(), result.getText());
+        assertEquals(dto.getPostId(), result.getPostId());
 
         ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
-        verify(commentDaoRepository).save(eq(1), captor.capture());
-        assertEquals(entity.getText(), captor.getValue().getText());
-        assertEquals(entity.getPostId(), captor.getValue().getPostId());
+        verify(commentDaoRepository).save(eq(postId), captor.capture());
+        assertEquals(dto.getText(), captor.getValue().getText());
+        assertEquals(dto.getPostId(), captor.getValue().getPostId());
     }
 
     @Test
     void shouldUpdateComment() {
         Integer postId = 1;
         Integer commentId = 2;
-        CommentUpdateDto dto = new CommentUpdateDto(2, "updated text", 1);
-        Comment updated = new Comment(2, 1, "updated text");
+        CommentUpdateDto dto = new CommentUpdateDto(commentId, "updated text", postId);
+        Comment updated = new Comment(commentId, postId, "updated text");
 
-        when(commentDaoRepository.findCommentById(1, updated.getId())).thenReturn(updated);
+        when(commentDaoRepository.findCommentById(postId, commentId)).thenReturn(updated);
 
-        CommentResponseDto result = commentService.update(postId, commentId,  dto);
+        CommentResponseDto result = commentService.update(postId, commentId, dto);
+
+        assertEquals(dto.getText(), result.getText());
+        assertEquals(dto.getPostId(), result.getPostId());
 
         ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
-        verify(commentDaoRepository).update(eq(1), captor.capture());
-        assertEquals(result.getText(), captor.getValue().getText());
-        assertEquals(result.getPostId(), captor.getValue().getPostId());
+        verify(commentDaoRepository).update(eq(postId), captor.capture());
+        assertEquals(dto.getText(), captor.getValue().getText());
+        assertEquals(dto.getPostId(), captor.getValue().getPostId());
     }
 
     @Test
@@ -133,6 +119,6 @@ public class CommentServiceTest {
 
         commentService.delete(postId, commentId);
 
-        verify(commentDaoRepository, times(1)).deleteById(1, 2);
+        verify(commentDaoRepository, times(1)).deleteById(postId, commentId);
     }
 }

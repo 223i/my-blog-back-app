@@ -3,13 +3,12 @@ package com.iron.service;
 import com.iron.model.Post;
 import com.iron.repository.ImagesDaoRepository;
 import com.iron.repository.PostDaoRepository;
-import com.iron.config.UnitTestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.NoSuchElementException;
@@ -18,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = UnitTestConfig.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class ImageServiceTest {
 
-    @Autowired
+    @MockitoBean
     private ImagesDaoRepository imagesDaoRepository;
 
-    @Autowired
+    @MockitoBean
     private PostDaoRepository postDaoRepository;
 
     @Autowired
@@ -64,7 +63,7 @@ public class ImageServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionIfPostNotFound()  {
+    void shouldThrowExceptionIfPostNotFound() {
 
         MultipartFile file = mock(MultipartFile.class);
 

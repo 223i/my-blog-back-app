@@ -38,6 +38,7 @@ class CommentsControllerIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
     MockMvc mockMvc;
 
     @BeforeEach
@@ -68,6 +69,7 @@ class CommentsControllerIntegrationTest {
     void shouldCreateCommentForPost1() throws Exception {
         CommentCreateDto dto = new CommentCreateDto();
         dto.setText("Новый комментарий для теста");
+        dto.setPostId(1);
 
         mockMvc.perform(post("/api/posts/1/comments")
                         .contentType(MediaType.APPLICATION_JSON)
